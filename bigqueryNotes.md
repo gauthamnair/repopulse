@@ -23,6 +23,7 @@ https://bigquery.cloud.google.com/queries/repo-pulse
 
 Here's the example query from google for github:
 
+```
 SELECT repository_name, count(repository_name) as pushes, repository_description, repository_url
 FROM [githubarchive:github.timeline]
 WHERE type="PushEvent"
@@ -31,6 +32,7 @@ WHERE type="PushEvent"
 GROUP BY repository_name, repository_description, repository_url
 ORDER BY pushes DESC
 LIMIT 100;
+```
 
 I click RUN QUERY, it works for 9.6s:
 

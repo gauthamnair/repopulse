@@ -1,0 +1,292 @@
+
+repository
+           fork : STRING
+           watchers : INTEGER
+           description : STRING
+           language : STRING
+           created
+                   at : STRING
+           url : STRING
+           open
+                issues : INTEGER
+           private : STRING
+           name : STRING
+           pushed
+                  at : STRING
+           master
+                  branch : STRING
+           integrate
+                     branch : STRING
+           owner : STRING
+           organization : STRING
+           forks : INTEGER
+           has
+               wiki : BOOLEAN
+               downloads : BOOLEAN
+               issues : BOOLEAN
+           homepage : STRING
+           size : INTEGER
+created
+        at : STRING
+url : STRING
+actor : STRING
+      attributes
+                 name : STRING
+                 company : STRING
+                 blog : STRING
+                 gravatar
+                          id : STRING
+                 location : STRING
+                 login : STRING
+                 type : STRING
+                 email : STRING
+payload
+        comment
+                body : STRING
+                updated
+                        at : STRING
+                position : INTEGER
+                created
+                        at : STRING
+                url : STRING
+                original
+                         commit
+                                id : STRING
+                         position : INTEGER
+                user
+                     url : STRING
+                     login : STRING
+                     gravatar
+                              id : STRING
+                     id : INTEGER
+                     avatar
+                            url : STRING
+                path : STRING
+                commit
+                       id : STRING
+                id : INTEGER
+        pull
+             request
+                     
+                      links
+                            self
+                                 href : STRING
+                            html
+                                 href : STRING
+                            review
+                                   comments
+                                            href : STRING
+                            comments
+                                     href : STRING
+                     deletions : INTEGER
+                     updated
+                             at : STRING
+                     mergeable : STRING
+                     diff
+                          url : STRING
+                     additions : INTEGER
+                     id : INTEGER
+                     title : STRING
+                     review
+                            comments : INTEGER
+                     comments : INTEGER
+                     state : STRING
+                     html
+                          url : STRING
+                     closed
+                            at : STRING
+                     issue
+                           url : STRING
+                     merged : STRING
+                            at : STRING
+                            by : STRING
+                               url : STRING
+                               gravatar
+                                        id : STRING
+                               avatar
+                                      url : STRING
+                               login : STRING
+                               id : INTEGER
+                     body : STRING
+                     head
+                          repo
+                               private : STRING
+                               pushed
+                                      at : STRING
+                               mirror
+                                      url : STRING
+                               owner
+                                     url : STRING
+                                     login : STRING
+                                     gravatar
+                                              id : STRING
+                                     avatar
+                                            url : STRING
+                                     id : INTEGER
+                               open
+                                    issues : INTEGER
+                               id : INTEGER
+                               size : INTEGER
+                               git
+                                   url : STRING
+                               html
+                                    url : STRING
+                               master
+                                      branch : STRING
+                               forks : INTEGER
+                               has
+                                   wiki : STRING
+                                   downloads : BOOLEAN
+                                   issues : STRING
+                               homepage : STRING
+                               fork : BOOLEAN
+                               updated
+                                       at : STRING
+                               description : STRING
+                               clone
+                                     url : STRING
+                               ssh
+                                   url : STRING
+                               svn
+                                   url : STRING
+                               watchers : INTEGER
+                               name : STRING
+                               language : STRING
+                               created
+                                       at : STRING
+                               url : STRING
+                          sha : STRING
+                          ref : STRING
+                          user
+                               url : STRING
+                               login : STRING
+                               gravatar
+                                        id : STRING
+                               avatar
+                                      url : STRING
+                               id : INTEGER
+                          label : STRING
+                     commits : INTEGER
+                     number : INTEGER
+                     base
+                          repo
+                               private : STRING
+                               pushed
+                                      at : STRING
+                               mirror
+                                      url : STRING
+                               owner
+                                     url : STRING
+                                     login : STRING
+                                     gravatar
+                                              id : STRING
+                                     avatar
+                                            url : STRING
+                                     id : INTEGER
+                               open
+                                    issues : INTEGER
+                               id : INTEGER
+                               size : INTEGER
+                               git
+                                   url : STRING
+                               html
+                                    url : STRING
+                               master
+                                      branch : STRING
+                               forks : INTEGER
+                               has
+                                   wiki : STRING
+                                   downloads : BOOLEAN
+                                   issues : STRING
+                               homepage : STRING
+                               fork : STRING
+                               updated
+                                       at : STRING
+                               description : STRING
+                               clone
+                                     url : STRING
+                               ssh
+                                   url : STRING
+                               svn
+                                   url : STRING
+                               watchers : INTEGER
+                               name : STRING
+                               language : STRING
+                               created
+                                       at : STRING
+                               url : STRING
+                          sha : STRING
+                          ref : STRING
+                          user
+                               url : STRING
+                               login : STRING
+                               gravatar
+                                        id : STRING
+                               avatar
+                                      url : STRING
+                               id : INTEGER
+                          label : STRING
+                     user
+                          url : STRING
+                          login : STRING
+                          gravatar
+                                   id : STRING
+                          avatar
+                                 url : STRING
+                          id : INTEGER
+                     created
+                             at : STRING
+                     url : STRING
+                     changed
+                             files : INTEGER
+                     patch
+                           url : STRING
+        head : STRING
+        description : STRING
+        url : STRING
+        issue : INTEGER
+              id : INTEGER
+        before : STRING
+        after : STRING
+        number : INTEGER
+        page
+             title : STRING
+             summary : STRING
+             sha : STRING
+             html
+                  url : STRING
+             action : STRING
+             page
+                  name : STRING
+        name : STRING
+        member
+               url : STRING
+               login : STRING
+               gravatar
+                        id : STRING
+               avatar
+                      url : STRING
+               id : INTEGER
+        master
+               branch : STRING
+        target
+               followers : INTEGER
+               repos : INTEGER
+               gravatar
+                        id : STRING
+               id : INTEGER
+               login : STRING
+        action : STRING
+        commit : STRING
+               name : STRING
+               id : STRING
+               flag : STRING
+               msg : STRING
+               email : STRING
+        desc : STRING
+        ref : STRING
+            type : STRING
+        id : INTEGER
+        size : INTEGER
+type : STRING
+public : BOOLEAN
