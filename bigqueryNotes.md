@@ -41,6 +41,40 @@ I click RUN QUERY, it works for 9.6s:
 and the query results is populated. The option to download as CSV is given.
 
 
+## Improving queries:
+
+querying for hadley's R repositories, organized by how many pushes since April 2012, showing when the repository was created.
+
+```
+SELECT repository_name, count(repository_name) as pushes, repository_created_at, repository_url
+FROM [githubarchive:github.timeline]
+WHERE type="PushEvent"
+    AND repository_language="R"
+    AND PARSE_UTC_USEC(created_at) >= PARSE_UTC_USEC('2012-04-01 00:00:00')
+    AND repository_owner="hadley"
+GROUP BY repository_name, repository_created_at, repository_url
+ORDER BY pushes DESC
+LIMIT 100;
+```
+
+The result looks about right:
+```
+repository_name	pushes	repository_created_at	repository_url
+dplyr	695	2012-10-28 13:39:17	https://github.com/hadley/dplyr
+devtools	662	2010-05-03 04:08:49	https://github.com/hadley/devtools
+adv-r	586	2013-08-20 11:43:03	https://github.com/hadley/adv-r
+ggplot2	537	2008-05-25 01:21:32	https://github.com/hadley/ggplot2
+httr	195	2011-11-11 15:05:00	https://github.com/hadley/httr
+lubridate	113	2009-03-11 01:18:52	https://github.com/hadley/lubridate
+plyr	100	2008-11-19 15:08:14	https://github.com/hadley/plyr
+pryr	69	2013-01-07 23:19:25	https://github.com/hadley/pryr
+...
+```
+
+
+Need to query for old repositories and see if I can group commits by month.
+
+
 
 ## Useful Links
 
