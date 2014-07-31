@@ -1,2 +1,2 @@
 *.json
-vInsight/*
+.ipynb_checkpoints/*

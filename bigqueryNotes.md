@@ -72,7 +72,30 @@ pryr	69	2013-01-07 23:19:25	https://github.com/hadley/pryr
 ```
 
 
+## pushes on dplyr
+
+```
+SELECT repository_name, created_at, actor_attributes_name
+FROM [githubarchive:github.timeline]
+WHERE type="PushEvent"
+    AND repository_name="dplyr"
+    AND PARSE_UTC_USEC(created_at) >= PARSE_UTC_USEC('2012-04-01 00:00:00')
+    AND repository_owner="hadley"
+ORDER BY created_at DESC
+LIMIT 100;
+```
+
+The result looks good, with lots of pushes from Hadley. By adding:
+
+```
+AND NOT actor_attributes_name="Hadley Wickham"
+```
+I could see who else contributed
+
+
 Need to query for old repositories and see if I can group commits by month.
+
+
 
 
 
