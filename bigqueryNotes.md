@@ -96,10 +96,16 @@ I could see who else contributed
 Need to query for old repositories and see if I can group commits by month.
 
 
+## counting repositories
+
 
 
 
 ## Useful Links
+
+my own commit history:
+https://api.github.com/repos/gauthamnair/repopulse/commits
+
 
 bigQuery SQL:
 
