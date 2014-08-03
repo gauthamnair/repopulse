@@ -29,15 +29,10 @@ print len(commits)
 # try doing it by hand:
 
 import requests
-
 plyrCommitsURL = r'https://api.github.com/repos/hadley/plyr/commits'
-
 r = requests.get(plyrCommitsURL)
 asjson = r.json()
 print len(asjson)
 #says 30: probably needs pagination
 print r.headers['link']
-# Yes!
-
-
-print len(asjson)
+# Yes - best to use pygithub :)
