@@ -40,9 +40,12 @@ class Repo(Base):
 	size = Column(sa.Integer)
 	forks_count = Column(sa.Integer)
 	stargazers_count = Column(sa.Integer)
+	subscribers_count = Column(sa.Integer)
+	network_count = Column(sa.Integer)
 
 	_specialGetterFromPyGithubObject = {
-		'owner_login': lambda x: x.owner.login
+		'owner_login': lambda x: x.owner.login,
+		'subscribers_count' : lambda x: x.raw_data['subscribers_count']
 	}
 	_doNotGetFromPyGithubObject = ['id']
 
