@@ -10,12 +10,7 @@ logging.basicConfig(level=logging.INFO)
 plyr = importer.getRepo('hadley/plyr')
 
 
-stored = gitModels.makeRepo(
-	full_name = plyr.full_name,
-	fork = plyr.fork,
-	owner_login = plyr.owner.login,
-	has_wiki = plyr.has_wiki
-	)
+stored = gitModels.makeRepo(plyr)
 
 
 fromdb = gitModels.session.query(gitModels.Repo).first()

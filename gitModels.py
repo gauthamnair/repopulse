@@ -38,6 +38,13 @@ class Repo(Base):
 	pushed_at = Column(sa.DateTime)
 	
 	size = Column(sa.Integer)
+	forks_count = Column(sa.Integer)
+	stargazers_count = Column(sa.Integer)
+
+	_specialGetterFromPyGithubObject = {
+		'owner_login': lambda x: x.owner.login
+	}
+	_doNotGetFromPyGithubObject = ['id']
 
 
 Base.metadata.create_all(engine)
@@ -46,21 +53,26 @@ Base.metadata.create_all(engine)
 sessionMaker = sa.orm.sessionmaker(bind=engine)
 session = sessionMaker()
 
-def makeRepo(repo):
-	theRepo = Repo(
-		full_name=repo.full_name,
-		name=repo.name,
-		owner_login=repo.owner.login,
-		fork=repo.fork,
-		has_wiki=repo.has_wiki,
-		has_issues=repo.has_issues,
-		homepage=repo.homepage,
-		language=repo.language,
-		description=repo.description,
-		created_at=repo.created_at,
-		pushed_at=repo.pushed_at,
-		size=repo.size,
-		)
+
+def extractKVPairsForModel(Model, pyGithubObject):
+	columnNames = Model.__table__.columns.keys()
+	kvpairs = dict()
+	for colName in columnNames:
+		if colName in Model._doNotGetFromPyGithubObject:
+			continue;
+		else:
+			if colName in Model._specialGetterFromPyGithubObject:
+				getter = Model._specialGetterFromPyGithubObject[colName]
+				value = getter(pyGithubObject)
+			else:
+				value = getattr(pyGithubObject, colName)
+			kvpairs[colName] = value
+	return kvpairs
+
+
+def makeRepo(pyGithubRepo):
+	kvpairs = extractKVPairsForModel(Repo, pyGithubRepo)
+	theRepo = Repo(**kvpairs)
 	session.add(theRepo)
 	return theRepo
 
