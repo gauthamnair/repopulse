@@ -8,8 +8,11 @@ def testPlyrCommits():
 	commitsImporter = importer.getCommitsForRepo(plyr)
 	commits = list(commitsImporter)
 	print len(commits)
+	return (plyr, commits)
 	# should be at least 715
 
 
-qstr = 'language:R created:"<= 2011-01-01"'
-
+def testSearchForR2011():
+	qstr = 'language:R created:"<= 2011-01-01"'
+	repos = list(importer.searchRepositories(qstr))
+	return repos
