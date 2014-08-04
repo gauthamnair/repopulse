@@ -45,9 +45,6 @@ print r.headers['link']
 
 
 # Try to get a list of repositories:
-
-
-
 qstr = 'language:R created:"<= 2011-01-01"'
 
 sr = g.search_repositories(query=qstr)
@@ -70,4 +67,3 @@ print firstRepo.owner.login
 print firstRepo.full_name
 print firstRepo.fork
 
-def storeRepo()
