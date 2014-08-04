@@ -46,8 +46,21 @@ Base.metadata.create_all(engine)
 sessionMaker = sa.orm.sessionmaker(bind=engine)
 session = sessionMaker()
 
-def makeRepo(**kwargs):
-	theRepo = Repo(**kwargs)
+def makeRepo(repo):
+	theRepo = Repo(
+		full_name=repo.full_name,
+		name=repo.name,
+		owner_login=repo.owner.login,
+		fork=repo.fork,
+		has_wiki=repo.has_wiki,
+		has_issues=repo.has_issues,
+		homepage=repo.homepage,
+		language=repo.language,
+		description=repo.description,
+		created_at=repo.created_at,
+		pushed_at=repo.pushed_at,
+		size=repo.size,
+		)
 	session.add(theRepo)
 	return theRepo
 

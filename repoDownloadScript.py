@@ -1,21 +1,20 @@
-import gitImporter
-import gitdb
+from gitImporter import importer
+import gitModels
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
 qstr = 'language:R stars:>1'
 
-outlog = open('log.txt', "a")
+outlog = open('log.txt', "w")
 
-for repo in gitImporter.importer.searchRepositories(qstr):
+for repo in importer.searchRepositories(qstr):
 	if not repo.fork:
 		logging.info('getting %s' % repo.full_name)
 		try:
-			gitdb.storeRepo(repo)
+			gitModels.makeRepo(repo)
+			gitModels.session.commit()
 		except Exception as err:
 			logging.info(err.message)
 			outlog.write(repo.full_name)
 
-# failed with:
-# 'Only the first 1000 search results are available'

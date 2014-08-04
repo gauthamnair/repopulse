@@ -1,5 +1,3 @@
 
-- download some data from a sample google dataset
-- download some data from github bigquery
+- load search query results using the sqlalchemy model
 
-- do a browser query for something interesting from github.

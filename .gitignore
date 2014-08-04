@@ -1,4 +1,5 @@
 *.json
 .ipynb_checkpoints/*
 data*
+log.txt
 *.pyc
