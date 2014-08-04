@@ -23,17 +23,17 @@ class Repo(Base):
 	__tablename__ = 'Repos'
 	id = Column(sa.Integer, primary_key=True)
 	
-	full_name = Column(sa.String(1024))
-	name = Column(sa.String(1024))
-	owner_login = Column(sa.String(1024))
+	full_name = Column(sa.Unicode(1024))
+	name = Column(sa.Unicode(1024))
+	owner_login = Column(sa.Unicode(1024))
 
 	fork = Column(sa.Boolean)
 	has_wiki = Column(sa.Boolean)
 	has_issues = Column(sa.Boolean)
-	homepage = Column(sa.String(1024))
+	homepage = Column(sa.Unicode(1024))
 
-	language = Column(sa.String(1024))
-	description = Column(sa.Text)
+	language = Column(sa.Unicode(1024))
+	description = Column(sa.UnicodeText)
 	created_at = Column(sa.DateTime)
 	pushed_at = Column(sa.DateTime)
 	
