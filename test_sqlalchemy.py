@@ -1,16 +1,24 @@
+import gitModels
+from gitImporter import importer
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+# make sure that the Repo table is clean so that only the inserted
+# guy is t
+
 import logging
-
 logging.basicConfig(level=logging.INFO)
 
-engine = create_engine("mysql+pymysql://root:@localhost/gitdb", echo=True)
-Base = declarative_base()
+plyr = importer.getRepo('hadley/plyr')
 
-connection = engine.connect()
-logging.info("Show tables:")
-result = connection.execute("SHOW TABLES")
-for row in result:
-	logging.info("Found Table:")
-	logging.info(row)
+
+stored = gitModels.makeRepo(
+	full_name = plyr.full_name,
+	fork = plyr.fork,
+	owner_login = plyr.owner.login,
+	has_wiki = plyr.has_wiki
+	)
+
+
+fromdb = gitModels.session.query(gitModels.Repo).first()
+
+assert(fromdb.full_name == stored.full_name)
+gitModels.session.commit()
