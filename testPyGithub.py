@@ -1,6 +1,13 @@
 from github import Github
+import os
 
-g = Github()
+mypw = os.environ['GITPASSWD']
+g = Github('gauthamnair', mypw)
+
+
+ratelimit = g.get_rate_limit()
+
+print ratelimit.rate.limit
 
 hadley = g.get_user('hadley')
 
@@ -18,6 +25,8 @@ print (hadley == hadleyAsOwner)
 
 
 commits = list(plyr.get_commits())
+# using g.get_rate_limit().rate.remaining
+# can see that each pagination counts as an api call.
 
 print len(commits)
 # says 715
@@ -50,11 +59,15 @@ p0 = sr.get_page(0)
 print len(p0)
 #30
 
-print len(sr.get_page(13
+print len(sr.get_page(13))
+#0
 
 firstRepo = p0[0]
 print type(firstRepo)
 # github Repository
 
 print firstRepo.owner.login
+print firstRepo.full_name
 print firstRepo.fork
+
+def storeRepo()
