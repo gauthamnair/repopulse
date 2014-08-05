@@ -2,6 +2,7 @@ from github import Github
 import os
 import logging
 import time
+import datetime
 
 
 class GitDataImporter:
@@ -61,6 +62,59 @@ class GitDataImporter:
 				for item in pageContents:
 					yield item
 			currentPageNumber += 1
+
+
+class SearchQueryChunker:
+	'''
+		Used to turn repository search queries that return too many
+		(>) results
+		into smaller queries by chunking by repository date creation
+	'''
+	MAX_RESULTS = 999
+	MIN_DATE = datetime.date(2000, 1, 1)
+
+	def __init__(self, importer, query, daysInterval=30):
+		self.query = query
+		self.upper_date_limit = datetime.date.today()
+		self.lower_date_limit = self.upper_date_limit - datetime.timedelta(days=daysInterval)
+		self.daysInterval = float(daysInterval)
+		self.importer = importer
+
+	def getNumResultsInCurrentInterval(self):
+		full_query = '%s created:%s..%s' % (self.query, self.lower_date_limit, self.upper_date_limit)
+		logging.info('counting results for search ' + full_query)
+
+		self.importer.waitForSearchLimitRefresh()
+		searchPaginator = self.importer.g.search_repositories(query=full_query)
+		return searchPaginator.totalCount
+
+	def searchCurrentInterval(self):
+		full_query = '%s created:%s..%s' % (self.query, self.lower_date_limit, self.upper_date_limit)
+		logging.info('github search for ' + full_query)
+
+		for repo in self.importer.searchRepositories(full_query):
+			yield repo
+
+	def search(self):
+		while True:
+			if self.getNumResultsInCurrentInterval() < self.MAX_RESULTS:
+				for repo in self.searchCurrentInterval():
+					yield repo
+				if self.lower_date_limit < self.MIN_DATE:
+					break
+				self.daysInterval *= 2
+				self.upper_date_limit = self.lower_date_limit - datetime.timedelta(days=1)
+				self.lower_date_limit = self.upper_date_limit - datetime.timedelta(self.daysInterval)
+			else:
+				if self.daysInterval < 0.5:
+					raise Exception("interval is just one day but still too many results")
+
+				self.daysInterval *= 0.5
+				self.lower_date_limit = self.upper_date_limit - datetime.timedelta(self.daysInterval)
+
+
+
+
 
 
 mypw = os.environ['GITPASSWD']
