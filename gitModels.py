@@ -49,6 +49,17 @@ class Repo(Base):
 	}
 	_doNotGetFromPyGithubObject = ['id']
 
+class WeeklyContribution(Base):
+	__tablename__ = 'WeeklyContributions'
+	id = Column(sa.Integer, primary_key=True)
+	author_login = Column(sa.Unicode(1024))
+	repo_full_name = Column(sa.Unicode(1024))
+	week_start = Column(sa.DateTime)
+	commits_num = Column(sa.Integer)
+	additions_num = Column(sa.Integer)
+	deletions_num = Column(sa.Integer)
+
+
 
 Base.metadata.create_all(engine)
 
