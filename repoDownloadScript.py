@@ -1,14 +1,19 @@
-from gitImporter import importer
+import gitImporter
 import gitModels
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
-qstr = 'language:R stars:>1'
-
 outlog = open('log.txt', "w")
 
-for repo in importer.searchRepositories(qstr):
+importer = gitImporter.importer
+
+qstr = 'language:R stars:>1'
+queryChunker = gitImporter.SearchQueryChunker(
+	importer, qstr, daysInterval = 30)
+
+
+for repo in queryChunker.search():
 	if not repo.fork:
 		logging.info('getting %s' % repo.full_name)
 		try:

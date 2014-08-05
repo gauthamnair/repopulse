@@ -37,6 +37,8 @@ class Repo(Base):
 	description = Column(sa.UnicodeText)
 	created_at = Column(sa.DateTime)
 	pushed_at = Column(sa.DateTime)
+
+	downloaded_on = Column(sa.DateTime)
 	
 	size = Column(sa.Integer)
 	forks_count = Column(sa.Integer)
@@ -46,7 +48,8 @@ class Repo(Base):
 
 	_specialGetterFromPyGithubObject = {
 		'owner_login': lambda x: x.owner.login,
-		'subscribers_count' : lambda x: x.raw_data['subscribers_count']
+		'subscribers_count' : lambda x: x.raw_data['subscribers_count'],
+		'downloaded_on' : lambda x: datetime.datetime.today()
 	}
 	_doNotGetFromPyGithubObject = ['id']
 
