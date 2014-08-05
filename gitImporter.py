@@ -3,7 +3,7 @@ import os
 import logging
 import time
 import datetime
-
+import time
 
 class GitDataImporter:
 	def __init__(self, githubObject):
@@ -32,6 +32,16 @@ class GitDataImporter:
 	def getRepo(self, argsToGetRepo):
 		self.waitForAPILimitRefresh()
 		return self.g.get_repo(argsToGetRepo)
+
+	def getWeeklyContributions(self, repo):
+		while True:
+			self.waitForAPILimitRefresh()
+			weeklyContributions = repo.get_stats_contributors()
+			if weeklyContributions == None:
+				time.sleep(2)
+			else:
+				return weeklyContributions
+
 
 	def getCommitsForRepo(self, repo):
 		logging.info('grabbing commits for repo %s' % repo.name)

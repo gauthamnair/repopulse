@@ -95,12 +95,9 @@ def makeRepo(pyGithubRepo):
 	return theRepo
 
 
-def storeWeeklyContributions(pyGithubRepo):
-	weeklyContributions = pyGithubRepo.get_stats_contributors()
-
+def storeWeeklyContributions(weeklyContributions, repo_full_name):
 	for contributor in weeklyContributions:
 		author_login = contributor.author.login
-		repo_full_name = pyGithubRepo.full_name
 		weeks = [week for week in contributor.raw_data['weeks'] if week['c'] > 0]
 
 		for week in weeks:
