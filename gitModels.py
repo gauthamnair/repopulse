@@ -90,9 +90,17 @@ def extractKVPairsForModel(Model, pyGithubObject):
 
 def makeRepo(pyGithubRepo):
 	kvpairs = extractKVPairsForModel(Repo, pyGithubRepo)
-	theRepo = Repo(**kvpairs)
-	session.add(theRepo)
-	return theRepo
+	
+	full_name = pyGithubRepo.full_name
+	
+	existingRepo = session.query(Repo).filter_by(full_name=full_name).first()
+	if existingRepo:
+		logging.info("A repo %s already exists. ignoring insert and returning existing", full_name)
+		return existingRepo
+	else:
+		theRepo = Repo(**kvpairs)
+		session.add(theRepo)
+		return theRepo
 
 
 def storeWeeklyContributions(weeklyContributions, repo_full_name):
