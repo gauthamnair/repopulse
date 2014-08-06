@@ -17,21 +17,20 @@ commitsFeatures = grouped['commits_num'].aggregate(featureMakers)['commits_num']
 howToAggregate = {
 'futureCommits_num': np.sum,
 'pastCommits_num' : np.sum,
-'daysSinceLastCommit' : np.min
+'daysSinceLastCommit' : np.min,
+'daysSinceFirstCommit' : np.max
 }
 commitStatsByRepo = commitsFeatures.groupby(level=0).aggregate(howToAggregate)
 commitStatsByRepo = commitStatsByRepo[~ commitStatsByRepo['daysSinceLastCommit'].isnull()]
 
 query = "SELECT full_name, created_at, downloaded_on, language FROM Repos"
 repos = pd.io.sql.read_sql(query, con)
-repos.head()
 
 timeSinceCreation = [tref - t.to_datetime().date() for t in repos['created_at']]
 repos['daysSinceCreation'] = [t.days for t in timeSinceCreation]
-repoStats = repos[['full_name', 'daysSinceCreation']]
+repoStats = repos[['full_name', 'daysSinceCreation', 'language']]
 
 byRepo = pd.merge(repoStats, commitStatsByRepo,
 	how='inner', left_on='full_name', right_index=True)
-
 
 byRepo.to_csv('data/intermediate/byRepo.csv')

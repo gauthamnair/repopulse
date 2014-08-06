@@ -46,6 +46,21 @@ def daysSinceLastNonZero(timeseries, tref):
 	    deltaT = tref - t.to_datetime().date()
 	    return deltaT.days
 
+def oldestNonZero(timeseries, tref):
+    subsetted = timeseries[timeseries > 0].ix[:tref]
+    if len(subsetted)==0:
+    	return None
+    else:
+    	return subsetted.index[0]
+
+def daysSinceOldestNonZero(timeseries, tref):
+    t = oldestNonZero(timeseries, tref)
+    if t == None:
+    	return np.nan
+    else:
+	    deltaT = tref - t.to_datetime().date()
+	    return deltaT.days
+
 def totalToDate(timeseries, tref):
 	return timeseries.ix[:tref].sum()
 
@@ -56,7 +71,10 @@ def makeFeatureMakers(tref, futureWindowInDays=defaultFutureWindowInDays):
 			futureWindowInDays=defaultFutureWindowInDays)
 	def daysSinceLastCommit(x):
 		return daysSinceLastNonZero(x, tref=tref)
+	def daysSinceFirstCommit(x):
+		return daysSinceOldestNonZero(x, tref=tref)
 	def pastCommits_num(x):
 		return totalToDate(x, tref=tref)
-	return [futureCommits_num, daysSinceLastCommit, pastCommits_num]
+	return [futureCommits_num, daysSinceLastCommit, 
+		daysSinceFirstCommit, pastCommits_num]
 
