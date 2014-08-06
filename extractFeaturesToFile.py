@@ -8,7 +8,8 @@ query = "SELECT * FROM WeeklyContributions"
 contrib = pd.io.sql.read_sql(query, con)
 contrib.index = contrib['week_start']
 
-featureMakers = makeFeatureMakers(tref=defaultTref())
+tref = defaultTref()
+featureMakers = makeFeatureMakers(tref=tref)
 grouped = contrib.groupby(['repo_full_name', 'author_login'], as_index=False)
 commitsFeatures = grouped['commits_num'].aggregate(featureMakers)['commits_num']
 
@@ -18,7 +19,19 @@ howToAggregate = {
 'pastCommits_num' : np.sum,
 'daysSinceLastCommit' : np.min
 }
-byRepo = commitsFeatures.groupby(level=0).aggregate(howToAggregate)
-byRepo = byRepo[~ byRepo['daysSinceLastCommit'].isnull()]
+commitStatsByRepo = commitsFeatures.groupby(level=0).aggregate(howToAggregate)
+commitStatsByRepo = commitStatsByRepo[~ commitStatsByRepo['daysSinceLastCommit'].isnull()]
+
+query = "SELECT full_name, created_at, downloaded_on, language FROM Repos"
+repos = pd.io.sql.read_sql(query, con)
+repos.head()
+
+timeSinceCreation = [tref - t.to_datetime().date() for t in repos['created_at']]
+repos['daysSinceCreation'] = [t.days for t in timeSinceCreation]
+repoStats = repos[['full_name', 'daysSinceCreation']]
+
+byRepo = pd.merge(repoStats, commitStatsByRepo,
+	how='inner', left_on='full_name', right_index=True)
+
 
 byRepo.to_csv('data/intermediate/byRepo.csv')
