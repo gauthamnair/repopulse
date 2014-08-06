@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+import numpy as np
 
 daysInWeek = 7
 def dailyRangeSinceBeginning(timeseries):
@@ -19,7 +20,7 @@ def resampleToDays(weeklyCommits, daterange=None):
 defaultFutureWindowInDays = 6*30
 
 def defaultTref():
-	return datetime.date.today() - datetime.timedelta(defaultFutureWindowInDays)
+	return datetime.date(2014, 8, 6) - datetime.timedelta(defaultFutureWindowInDays)
 
 def totalInPeriodStarting(timeseries, tref, 
 		futureWindowInDays = defaultFutureWindowInDays):
@@ -31,10 +32,31 @@ def totalInDefaultPeriod(timeseries):
 	return totalInPeriodStarting(timeseries, defaultTref())
 
 def mostRecentNonZero(timeseries, tref):
-    subsetted = timeseries[timeseries>0].ix[:tref]
-    return subsetted.index[-1]
+    subsetted = timeseries[timeseries > 0].ix[:tref]
+    if len(subsetted)==0:
+    	return None
+    else:
+    	return subsetted.index[-1]
 
 def daysSinceLastNonZero(timeseries, tref):
     t = mostRecentNonZero(timeseries, tref)
-    deltaT = tref - t.to_datetime().date()
-    return deltaT.days
+    if t == None:
+    	return np.nan
+    else:
+	    deltaT = tref - t.to_datetime().date()
+	    return deltaT.days
+
+def totalToDate(timeseries, tref):
+	return timeseries.ix[:tref].sum()
+
+
+def makeFeatureMakers(tref, futureWindowInDays=defaultFutureWindowInDays):
+	def futureCommits_num(x):
+		return totalInPeriodStarting(x, tref=tref,
+			futureWindowInDays=defaultFutureWindowInDays)
+	def daysSinceLastCommit(x):
+		return daysSinceLastNonZero(x, tref=tref)
+	def pastCommits_num(x):
+		return totalToDate(x, tref=tref)
+	return [futureCommits_num, daysSinceLastCommit, pastCommits_num]
+
