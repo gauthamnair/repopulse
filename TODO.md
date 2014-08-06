@@ -9,5 +9,7 @@ x modify scripts to avoid duplicates
 
 x removed duplicates from Repos and weeks
 
-- build a temporal feature maker
-- build a target maker
+x explore a temporal feature maker
+x explore a target maker
+
+- build feature makers
