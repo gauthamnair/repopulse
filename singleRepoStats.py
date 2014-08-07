@@ -1,5 +1,4 @@
 from gitImporter import importer, weeklyContributionsToDicts
-from featureMakers import makeFeatureMakers, howToAggregateAuthors
 import pandas as pd
 import featureMakers
 import datetime
@@ -9,20 +8,14 @@ def getRepoCommitsStats(repoString):
 	repo = importer.getRepo(repoString)
 
 	weekly = importer.getWeeklyContributions(repo)
-
-	tref = datetime.date.today()
-	featureMakers = makeFeatureMakers(tref=tref)
-
 	df = pd.DataFrame(list(weeklyContributionsToDicts(weekly)))
 	df.index = df['week_start']
-	grouped = df[['author_login','commits_num']].groupby(['author_login'], as_index=False)
 
-	byAuthor = grouped.aggregate(featureMakers)['commits_num']
+	tref = datetime.date.today()
+	fmaker = featureMakers.FeatureMaker(tref=tref)
 
-	commitsFeatures = {colName : aggregator(byAuthor[colName]) 
-		for (colName, aggregator) in howToAggregateAuthors.items()}
-	commitsFeatures = pd.DataFrame([commitsFeatures])
-	return commitsFeatures
+	commitsFeatures = fmaker.makeAuthorAggregatedFeatures(df)
+	return pd.DataFrame([commitsFeatures])
 
 def getPredictedProbAlive(repoString):
 	commitsFeatures = getRepoCommitsStats(repoString)
