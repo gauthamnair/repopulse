@@ -2,6 +2,7 @@ from flask import render_template, request, redirect
 from app import app
 import pymysql as mdb
 import datetime
+import singleRepoStats
 
 db = mdb.connect(user="root", host="localhost", db="world_innodb", charset='utf8')
 
@@ -10,8 +11,14 @@ db = mdb.connect(user="root", host="localhost", db="world_innodb", charset='utf8
 def index():
 	return render_template("index.html", theTime=datetime.datetime.today())
 
-@app.route('/mockpost', methods=['POST'])
+@app.route('/getresult', methods=['POST'])
 def mockpost():
-	print "\nThe Field is"
-	print request.form["somefield"], "\n\n"
-	return redirect("/index")
+	print "\nThe Repo String is"
+	repoString = request.form["repoString"]
+	print repoString, "\n\n"
+
+	probAlive = singleRepoStats.getPredictedProbAlive(repoString)
+	print probAlive
+	return render_template("result.html", 
+		repoString=repoString,
+		probAlive=probAlive)
