@@ -22,83 +22,78 @@ defaultFutureWindowInDays = 6*30
 def defaultTref():
 	return datetime.date(2014, 8, 6) - datetime.timedelta(defaultFutureWindowInDays)
 
-def totalInPeriodStarting(timeseries, tref, 
-		futureWindowInDays = defaultFutureWindowInDays):
+class FeatureMaker:
+    def __init__(self, tref, futureWindowInDays=defaultFutureWindowInDays):
+        self.tref = tref
+        self.futureWindowInDays = futureWindowInDays
 
-	tfuture = tref + datetime.timedelta(futureWindowInDays)
-	return timeseries.ix[tref : tfuture].sum()
+    def totalInPeriodStarting(self, timeseries):
+    	tfuture = self.tref + datetime.timedelta(self.futureWindowInDays)
+    	return timeseries.ix[self.tref : tfuture].sum()
 
-def totalInDefaultPeriod(timeseries):
-	return totalInPeriodStarting(timeseries, defaultTref())
+    def mostRecentNonZero(self, timeseries):
+        subsetted = timeseries[timeseries > 0].ix[:self.tref]
+        if len(subsetted)==0:
+        	return None
+        else:
+        	return subsetted.index[-1]
 
-def mostRecentNonZero(timeseries, tref):
-    subsetted = timeseries[timeseries > 0].ix[:tref]
-    if len(subsetted)==0:
-    	return None
-    else:
-    	return subsetted.index[-1]
+    def daysSinceLastNonZero(self, timeseries):
+        t = self.mostRecentNonZero(timeseries)
+        if t == None:
+        	return np.nan
+        else:
+    	    deltaT = self.tref - t.to_datetime().date()
+    	    return deltaT.days
 
-def daysSinceLastNonZero(timeseries, tref):
-    t = mostRecentNonZero(timeseries, tref)
-    if t == None:
-    	return np.nan
-    else:
-	    deltaT = tref - t.to_datetime().date()
-	    return deltaT.days
+    def oldestNonZero(self, timeseries):
+        subsetted = timeseries[timeseries > 0].ix[:self.tref]
+        if len(subsetted)==0:
+        	return None
+        else:
+        	return subsetted.index[0]
 
-def oldestNonZero(timeseries, tref):
-    subsetted = timeseries[timeseries > 0].ix[:tref]
-    if len(subsetted)==0:
-    	return None
-    else:
-    	return subsetted.index[0]
+    def daysSinceOldestNonZero(self, timeseries):
+        t = self.oldestNonZero(timeseries)
+        if t == None:
+        	return np.nan
+        else:
+    	    deltaT = self.tref - t.to_datetime().date()
+    	    return deltaT.days
 
-def daysSinceOldestNonZero(timeseries, tref):
-    t = oldestNonZero(timeseries, tref)
-    if t == None:
-    	return np.nan
-    else:
-	    deltaT = tref - t.to_datetime().date()
-	    return deltaT.days
+    def totalToDate(self, timeseries):
+    	return timeseries.ix[:self.tref].sum()
 
-def totalToDate(timeseries, tref):
-	return timeseries.ix[:tref].sum()
+    def makeBasicCommitsFeatureMakers(self):
+        makers = {
+            'futureCommits_num' :  self.totalInPeriodStarting,
+            'pastCommits_num' : self.totalToDate,
+            'daysSinceLastCommit' : self.daysSinceLastNonZero,
+            'daysSinceFirstCommit' : self.daysSinceOldestNonZero
+        }
+        return {'commits_num':makers}
 
+    def makeByAuthorFeatures(self, df):
+        grouped = df[['author_login','commits_num']].groupby(['author_login'])
+        aggregated = grouped.aggregate(self.makeBasicCommitsFeatureMakers())
+        # to get rid of multi-index
+        return aggregated['commits_num']
 
-def basicCommitsFeaturesMaker(tref, futureWindowInDays=defaultFutureWindowInDays):
-	def futureCommits_num(x):
-		return totalInPeriodStarting(x, tref=tref,
-			futureWindowInDays=defaultFutureWindowInDays)
-	def daysSinceLastCommit(x):
-		return daysSinceLastNonZero(x, tref=tref)
-	def daysSinceFirstCommit(x):
-		return daysSinceOldestNonZero(x, tref=tref)
-	def pastCommits_num(x):
-		return totalToDate(x, tref=tref)
-	return [futureCommits_num, daysSinceLastCommit, 
-		daysSinceFirstCommit, pastCommits_num]
+    basicFeatureAggregators = {
+        'futureCommits_num': np.sum,
+        'pastCommits_num' : np.sum,
+        'daysSinceLastCommit' : np.min,
+        'daysSinceFirstCommit' : np.max
+    }
 
+    def aggregateBasicAuthorFeaturesToDict(self, df):
+        aggregated = dict()
+        for colName, aggregator in self.basicFeatureAggregators.items():
+            aggregated[colName] = aggregator(df[colName])
+        return aggregated
 
-basicFeatureAggregators = {
-    'futureCommits_num': np.sum,
-    'pastCommits_num' : np.sum,
-    'daysSinceLastCommit' : np.min,
-    'daysSinceFirstCommit' : np.max
-}
-
-def makeByAuthorFeatures(df, tref, futureWindowInDays=defaultFutureWindowInDays):
-    authorCommitsFeatureMaker = basicCommitsFeaturesMaker(tref, futureWindowInDays)
-    grouped = df[['author_login','commits_num']].groupby(['author_login'], as_index=False)
-    return grouped.aggregate(authorCommitsFeatureMaker)['commits_num']    
-
-def aggregateBasicAuthorFeaturesToDict(df):
-    aggregated = dict()
-    for colName, aggregator in basicFeatureAggregators.items():
-        aggregated[colName] = aggregator(df[colName])
-    return aggregated
-
-def makeAuthorAggregatedFeatures(df, tref, futureWindowInDays=defaultFutureWindowInDays):
-    byAuthor = makeByAuthorFeatures(df, tref, futureWindowInDays)
-    return aggregateBasicAuthorFeaturesToDict(byAuthor)
+    def makeAuthorAggregatedFeatures(self, df):
+        byAuthor = self.makeByAuthorFeatures(df)
+        return self.aggregateBasicAuthorFeaturesToDict(byAuthor)
 
 
