@@ -65,7 +65,7 @@ def totalToDate(timeseries, tref):
 	return timeseries.ix[:tref].sum()
 
 
-def makeFeatureMakers(tref, futureWindowInDays=defaultFutureWindowInDays):
+def basicCommitsFeaturesMaker(tref, futureWindowInDays=defaultFutureWindowInDays):
 	def futureCommits_num(x):
 		return totalInPeriodStarting(x, tref=tref,
 			futureWindowInDays=defaultFutureWindowInDays)
@@ -79,9 +79,26 @@ def makeFeatureMakers(tref, futureWindowInDays=defaultFutureWindowInDays):
 		daysSinceFirstCommit, pastCommits_num]
 
 
-howToAggregateAuthors = {
-'futureCommits_num': np.sum,
-'pastCommits_num' : np.sum,
-'daysSinceLastCommit' : np.min,
-'daysSinceFirstCommit' : np.max
+basicFeatureAggregators = {
+    'futureCommits_num': np.sum,
+    'pastCommits_num' : np.sum,
+    'daysSinceLastCommit' : np.min,
+    'daysSinceFirstCommit' : np.max
 }
+
+def makeByAuthorFeatures(df, tref, futureWindowInDays=defaultFutureWindowInDays):
+    authorCommitsFeatureMaker = basicCommitsFeaturesMaker(tref, futureWindowInDays)
+    grouped = df[['author_login','commits_num']].groupby(['author_login'], as_index=False)
+    return grouped.aggregate(authorCommitsFeatureMaker)['commits_num']    
+
+def aggregateBasicAuthorFeaturesToDict(df):
+    aggregated = dict()
+    for colName, aggregator in basicFeatureAggregators.items():
+        aggregated[colName] = aggregator(df[colName])
+    return aggregated
+
+def makeAuthorAggregatedFeatures(df, tref, futureWindowInDays=defaultFutureWindowInDays):
+    byAuthor = makeByAuthorFeatures(df, tref, futureWindowInDays)
+    return aggregateBasicAuthorFeaturesToDict(byAuthor)
+
+

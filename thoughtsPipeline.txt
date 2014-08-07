@@ -1,0 +1,20 @@
+thoughts on the pipeline:
+
+I have at the moment two sources of data
+for a repository:
+the repo itself, which contains language and owner, 
+but no other historical data.
+
+the weekly commits,
+which have author-level resolution.
+
+
+First stage of feature extraction:
+from database to per repo summary statistics
+the aim is to have just one
+
+def getFeaturesFromWeeklyContributions():
+	pass
+
+def buildTrainingSet():
+	pass

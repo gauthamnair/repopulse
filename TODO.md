@@ -12,4 +12,8 @@ x removed duplicates from Repos and weeks
 x explore a temporal feature maker
 x explore a target maker
 
-- build feature makers
+x build feature makers
+x build something that grabs a single repo and predicts its near future.
+
+x import flask stuff to this repo
+x mvp
