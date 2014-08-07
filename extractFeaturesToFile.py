@@ -1,5 +1,4 @@
-from featureMakers import makeFeatureMakers, defaultTref
-import numpy as np
+from featureMakers import makeFeatureMakers, defaultTref, howToAggregateAuthors
 import pandas as pd
 import pymysql as mdb
 con = mdb.connect('localhost', 'root', '', 'gitdb');
@@ -14,13 +13,7 @@ grouped = contrib.groupby(['repo_full_name', 'author_login'], as_index=False)
 commitsFeatures = grouped['commits_num'].aggregate(featureMakers)['commits_num']
 
 
-howToAggregate = {
-'futureCommits_num': np.sum,
-'pastCommits_num' : np.sum,
-'daysSinceLastCommit' : np.min,
-'daysSinceFirstCommit' : np.max
-}
-commitStatsByRepo = commitsFeatures.groupby(level=0).aggregate(howToAggregate)
+commitStatsByRepo = commitsFeatures.groupby(level=0).aggregate(howToAggregateAuthors)
 commitStatsByRepo = commitStatsByRepo[~ commitStatsByRepo['daysSinceLastCommit'].isnull()]
 
 query = "SELECT full_name, created_at, downloaded_on, language FROM Repos"

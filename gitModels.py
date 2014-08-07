@@ -54,7 +54,7 @@ class Repo(Base):
 	_doNotGetFromPyGithubObject = ['id']
 
 
-class WeeklyContribution(Base):
+	class WeeklyContribution(Base):
 	__tablename__ = 'WeeklyContributions'
 	id = Column(sa.Integer, primary_key=True)
 	author_login = Column(sa.Unicode(1024))
@@ -101,6 +101,7 @@ def makeRepo(pyGithubRepo):
 		theRepo = Repo(**kvpairs)
 		session.add(theRepo)
 		return theRepo
+
 
 
 def storeWeeklyContributions(weeklyContributions, repo_full_name):

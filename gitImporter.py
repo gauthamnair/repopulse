@@ -124,6 +124,19 @@ class SearchQueryChunker:
 
 
 
+def weeklyContributionsToDicts(weeklyContributions):
+	for contributor in weeklyContributions:
+		author_login = contributor.author.login
+		weeks = [week for week in contributor.raw_data['weeks'] if week['c'] > 0]
+
+		for week in weeks:
+			yield dict(
+				author_login=author_login,
+				week_start=datetime.datetime.fromtimestamp(week['w']),
+				commits_num = week['c'],
+				additions_num = week['a'],
+				deletions_num = week['d']
+			)
 
 
 

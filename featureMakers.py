@@ -78,3 +78,10 @@ def makeFeatureMakers(tref, futureWindowInDays=defaultFutureWindowInDays):
 	return [futureCommits_num, daysSinceLastCommit, 
 		daysSinceFirstCommit, pastCommits_num]
 
+
+howToAggregateAuthors = {
+'futureCommits_num': np.sum,
+'pastCommits_num' : np.sum,
+'daysSinceLastCommit' : np.min,
+'daysSinceFirstCommit' : np.max
+}
