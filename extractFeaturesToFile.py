@@ -5,7 +5,7 @@ con = mdb.connect('localhost', 'root', '', 'gitdb');
 
 query = "SELECT * FROM WeeklyContributions"
 weeklyData = pd.io.sql.read_sql(query, con)
-weeklyData.index = weeklyData['week_start']
+featureMakers.setIndexToWeekStartDate(weeklyData)
 
 tref = featureMakers.defaultTref()
 fmaker = featureMakers.FeatureMaker(tref=tref)

@@ -17,6 +17,9 @@ def resampleToDays(weeklyCommits, daterange=None):
     x = x.fillna(0)
     return x
 
+def setIndexToWeekStartDate(df):
+    df.index = pd.to_datetime([x.date() for x in df['week_start']])
+
 defaultFutureWindowInDays = 6*30
 
 def defaultTref():

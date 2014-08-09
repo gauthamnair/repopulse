@@ -4,14 +4,16 @@ import gitModels
 import logging
 logging.basicConfig(level=logging.INFO)
 
-outlog = open('log.txt', "w")
+failurelog = open('failures.txt', "w")
+successlog = open('success.txt', "w")
 
 importer = gitImporter.importer
 
-qstr = 'language:R stars:>1'
+qstr = 'language:Python stars:>9'
 queryChunker = gitImporter.SearchQueryChunker(
 	importer, qstr, daysInterval = 30)
 
+numRepoDownloaded=0
 
 for repo in queryChunker.search():
 	if not repo.fork:
@@ -19,8 +21,10 @@ for repo in queryChunker.search():
 		try:
 			gitModels.makeRepo(repo)
 			gitModels.session.commit()
+			successlog.write(repo.full_name)
 		except Exception as err:
 			logging.info(err.message)
-			outlog.write(repo.full_name)
+			failurelog.write(repo.full_name)
+			failurelog.write('error:' + err.message)
 
 
