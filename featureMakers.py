@@ -12,7 +12,7 @@ def resampleToDays(weeklyCommits, daterange=None):
     x = weeklyCommits.reindex(
         index=daterange,
         method='ffill',
-        limit=daysInWeek)
+        limit=daysInWeek-1)
     x = x/daysInWeek
     x = x.fillna(0)
     return x
