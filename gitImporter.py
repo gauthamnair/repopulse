@@ -3,7 +3,26 @@ import os
 import logging
 import time
 import datetime
-import time
+
+
+def getPageWithAutoRetry(getter, parameter, waitForLimitRefresh):
+	waitIfFail = 1
+	attempts = 0
+	while attempts < 5:
+		try:
+			waitForLimitRefresh()
+			pageContents = getter(parameter)
+			return pageContents
+		except Exception as err:
+			logging.info("Failed while trying to get page.")
+			logging.info("Error:" + err.message)
+			logging.info("Retrying...")
+			time.sleep(waitIfFail)
+			waitIfFail *= 2
+			attempts += 1
+	logging.info("Too many attempts. Returning empty list.")
+	return []
+
 
 class GitDataImporter:
 	def __init__(self, githubObject):
@@ -63,15 +82,17 @@ class GitDataImporter:
 		searchPaginator = self.g.search_repositories(query=query)
 		currentPageNumber = 0
 		while True:
-			self.waitForSearchLimitRefresh()
 			logging.info('requesting page %d of searchResults' % currentPageNumber)
-			pageContents = searchPaginator.get_page(currentPageNumber)
+			pageContents = getPageWithAutoRetry(searchPaginator.get_page, 
+				currentPageNumber, self.waitForSearchLimitRefresh)
 			if len(pageContents) == 0:
 				break
 			else:
 				for item in pageContents:
 					yield item
 			currentPageNumber += 1
+
+
 
 
 class SearchQueryChunker:
@@ -94,9 +115,11 @@ class SearchQueryChunker:
 		full_query = '%s created:%s..%s' % (self.query, self.lower_date_limit, self.upper_date_limit)
 		logging.info('counting results for search ' + full_query)
 
-		self.importer.waitForSearchLimitRefresh()
-		searchPaginator = self.importer.g.search_repositories(query=full_query)
-		return searchPaginator.totalCount
+		searchPaginator = getPageWithAutoRetry(self.importer.g.search_repositories,
+			full_query, self.importer.waitForSearchLimitRefresh)
+		totalCount = getPageWithAutoRetry(lambda x: searchPaginator.totalCount, None,
+			self.importer.waitForSearchLimitRefresh)
+		return totalCount
 
 	def searchCurrentInterval(self):
 		full_query = '%s created:%s..%s' % (self.query, self.lower_date_limit, self.upper_date_limit)

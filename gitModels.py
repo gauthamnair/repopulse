@@ -46,9 +46,14 @@ class Repo(Base):
 	subscribers_count = Column(sa.Integer)
 	network_count = Column(sa.Integer)
 
+	# turns out network_count and the true subscribers
+	# count require github requests if starting from a repo
+	# obtained from the search API. Making them null.
+	# could fill them in later.
 	_specialGetterFromPyGithubObject = {
 		'owner_login': lambda x: x.owner.login,
-		'subscribers_count' : lambda x: x.raw_data['subscribers_count'],
+		'subscribers_count' : lambda x: None,
+		'network_count' : lambda x: None,
 		'downloaded_on' : lambda x: datetime.datetime.today()
 	}
 	_doNotGetFromPyGithubObject = ['id']

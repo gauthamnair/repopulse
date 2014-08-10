@@ -16,15 +16,16 @@ queryChunker = gitImporter.SearchQueryChunker(
 numRepoDownloaded=0
 
 for repo in queryChunker.search():
+	numRepoDownloaded += 1
 	if not repo.fork:
-		logging.info('getting %s' % repo.full_name)
+		logging.info('%d storing %s' % (numRepoDownloaded, repo.full_name))
 		try:
 			gitModels.makeRepo(repo)
 			gitModels.session.commit()
-			successlog.write(repo.full_name)
+			successlog.write(repo.full_name + "\n")
 		except Exception as err:
 			logging.info(err.message)
-			failurelog.write(repo.full_name)
-			failurelog.write('error:' + err.message)
+			logging.exception("failure storing " + repo.full_name + "\n")
+			failurelog.write(repo.full_name + "\n")
 
 
