@@ -22,7 +22,7 @@ x download Python repos
 - download Python weekly data
 
 - clean up downloading code
-- code to make new features
+x code to make new features
 
 - code to validate by k-fold
 

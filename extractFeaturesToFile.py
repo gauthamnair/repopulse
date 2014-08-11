@@ -5,14 +5,14 @@ con = mdb.connect('localhost', 'root', '', 'gitdb');
 
 query = "SELECT * FROM WeeklyContributions"
 weeklyData = pd.io.sql.read_sql(query, con)
-featureMakers.setIndexToWeekStartDate(weeklyData)
+featureMakers.removeTimeFromWeekStartDate(weeklyData)
 
 tref = featureMakers.defaultTref()
 fmaker = featureMakers.FeatureMaker(tref=tref)
 
 commitStatsByRepoDicts = []
 for repo_full_name, repoWeeklyData in weeklyData.groupby('repo_full_name'):
-	features = fmaker.makeAuthorAggregatedFeatures(repoWeeklyData)
+	features = fmaker.makeFeatures(repoWeeklyData)
 	features['repo_full_name'] = repo_full_name
 	commitStatsByRepoDicts.append(features)
 
