@@ -1,35 +1,27 @@
-import pandas as pd
-import numpy as np
 from sklearn import linear_model
-from sklearn.metrics import classification_report
+import sklearn.preprocessing
+import sklearn.pipeline
+import sklearn.metrics
 from sklearn.externals import joblib
 
+import trainingData
+import modelTools
 
-def makePredictors(byRepo):
-	dfX = byRepo[['daysSinceLastCommit', 'pastCommits_num', 'daysSinceFirstCommit']]
-	x = dfX.values
-	predictors = x[:,[0]]
-	return predictors
 
 def learnModel():
-	byRepo = pd.read_csv('data/intermediate/byRepo.csv')
-	del byRepo['Unnamed: 0']
+	byRepo = trainingData.load()
+	modelTools.addAliveOrDeadColumn(byRepo)
 
-	byRepo['aliveOrDead'] = np.where(byRepo['futureCommits_num'] > 0,
-	                                 'alive',
-	                                 'dead')
+	(X, colNames) = modelTools.makePredictors(byRepo)
+	y = modelTools.makeTarget(byRepo)
 
-	predictors = makePredictors(byRepo)
+	learner = sklearn.pipeline.Pipeline(
+		[('scaler', sklearn.preprocessing.StandardScaler()),
+		('logistic', linear_model.LogisticRegression())])
 
-	y = np.where(byRepo['aliveOrDead']=='alive',1,0)
-
-	learner = linear_model.LogisticRegression()
-
-	learner.fit(predictors, y)
-
-	predictions = learner.predict(predictors)
-
-	print classification_report(y_true=y, y_pred=predictions)
+	learner.fit(X, y)
+	predictions = learner.predict(X)
+	print sklearn.metrics.classification_report(y_true=y, y_pred=predictions)
 	joblib.dump(learner, 'productionModel.pkl')
 
 

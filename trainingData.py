@@ -30,7 +30,7 @@ def computeAndSaveToFile():
 	commitStatsByRepo.to_csv(_extractedFileName)
 
 
-def loadFromFile():
+def load():
 	byRepo = pd.read_csv(_extractedFileName)
 	del byRepo['Unnamed: 0']
 	return byRepo

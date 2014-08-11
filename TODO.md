@@ -19,6 +19,7 @@ x import flask stuff to this repo
 x mvp
 
 analysis
+- check that the EWMA code is doing the right thing. Diversity seems too big.
 x code to make new features
 x write to Xavier
 x plot exploratory data vs. target
@@ -29,6 +30,9 @@ x build a framework for experimentation around a scikit pipeline
 x first-pass optimize logistic Regression
 x try random forests and/or SVM.
 - clean up feature-making tests
+
+deployment
+x propagated feature-making/training changes up to the website.
 
 improve the data story
 - find concrete compelling use case example
@@ -45,3 +49,20 @@ user experience
 - bootstrap the website to make it look nice
 - go over my old d3 practice
 - add graph
+
+
+Notes from talking to Div and Brandon:
+
+the parameters to tune in a RandomForest are:
+- max_features (mostly)
+- n_estimators (a little)
+
+the parameters to tune in a grandient boosting classifier:
+- max_depth (key)
+
+brandon also pointed me to his repo in which he has
+encapsulated some of these workflows for reuse:
+
+https://github.com/brandonckelly/bck_stats
+note especially
+bck_stats/sklearn_estimator_suite.py
