@@ -23,11 +23,11 @@ x code to make new features
 x write to Xavier
 x plot exploratory data vs. target
 x get cross-validation working
-- play with scaling explanatory variables
-- build a framework for experimentation around a scikit pipeline
+x play with scaling explanatory variables
+x build a framework for experimentation around a scikit pipeline
 - implement a learning curve visualizer
-- first-pass optimize logistic Regression
-- try random forests and/or SVM.
+x first-pass optimize logistic Regression
+x try random forests and/or SVM.
 - clean up feature-making tests
 
 improve the data story

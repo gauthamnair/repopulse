@@ -3,6 +3,9 @@ import numpy as np
 from sklearn import linear_model
 import sklearn.cross_validation
 import sklearn.metrics
+import sklearn.ensemble
+import sklearn.preprocessing
+import sklearn.pipeline
 from sklearn.metrics import classification_report
 
 # there are nans in the gaps for items that don't have any gaps
@@ -65,4 +68,23 @@ def evaluateModel(learner):
 		evaluationReport.addTestData(learner, X_test, y_test)
 	return evaluationReport
 
-report = evaluateModel(learner = linear_model.LogisticRegression())
+logistic = linear_model.LogisticRegression()
+reportLogistic = evaluateModel(learner = logistic)
+
+scaledLogistic = sklearn.pipeline.Pipeline(
+	[('scaler', sklearn.preprocessing.StandardScaler()),
+	('logistic', linear_model.LogisticRegression())]) 
+reportScaledLogistic = evaluateModel(scaledLogistic)
+
+Cvalues = [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10**4]
+results = []
+for C in Cvalues:
+	scaledLogistic.set_params(logistic__C=C)
+	results.append(evaluateModel(scaledLogistic))
+
+for c, result in zip(Cvalues, results):
+	print c
+	print result.classification_report()
+
+reportForest = evaluateModel(learner = sklearn.ensemble.RandomForestClassifier())
+print reportForest.classification_report()
