@@ -21,8 +21,8 @@ x mvp
 analysis
 x code to make new features
 x write to Xavier
-- plot exploratory data vs. target
-- get cross-validation working
+x plot exploratory data vs. target
+x get cross-validation working
 - play with scaling explanatory variables
 - build a framework for experimentation around a scikit pipeline
 - implement a learning curve visualizer
