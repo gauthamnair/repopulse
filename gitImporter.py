@@ -61,7 +61,6 @@ class GitDataImporter:
 			else:
 				return weeklyContributions
 
-
 	def getCommitsForRepo(self, repo):
 		logging.info('grabbing commits for repo %s' % repo.name)
 		commitPaginator = repo.get_commits()
