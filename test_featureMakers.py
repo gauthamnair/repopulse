@@ -5,19 +5,22 @@ con = mdb.connect('localhost', 'root', '', 'gitdb');
 
 query = "SELECT * FROM WeeklyContributions WHERE repo_full_name='hadley/plyr'"
 weekly = pd.io.sql.read_sql(query, con)
-weekly.index = weekly['week_start']
+# weekly.index = weekly['week_start']
 
 hadleyWeekly = weekly[weekly['author_login'] == 'hadley']
+
+dailyCommitsByAuthor = featureMakers.pivotToDailyCommitsByAuthor(weekly)
 
 tref = featureMakers.defaultTref()
 
 fmaker = featureMakers.FeatureMaker(tref=featureMakers.defaultTref())
 
-byAuthor = fmaker.makeByAuthorFeatures(weekly)
+byAuthor = fmaker.makeByAuthorFeatures(dailyCommitsByAuthor)
+print byAuthor
 aggregated = fmaker.aggregateBasicAuthorFeaturesToDict(byAuthor)
 print aggregated
 
-directlyAggregated = fmaker.makeAuthorAggregatedFeatures(weekly)
+directlyAggregated = fmaker.makeFeatures(weekly)
 print directlyAggregated
 
 query = '''
@@ -25,11 +28,10 @@ SELECT * FROM WeeklyContributions
 WHERE repo_full_name IN ('hadley/plyr', 'hadley/ggplot2')
 '''
 twoRepos = pd.io.sql.read_sql(query, con)
-twoRepos.index = twoRepos['week_start']
 
 results = []
 for repo_full_name, weeklyData in twoRepos.groupby('repo_full_name'):
-	features = fmaker.makeAuthorAggregatedFeatures(weeklyData)
+	features = fmaker.makeFeatures(weeklyData)
 	features['repo_full_name'] = repo_full_name
 	results.append(features)
-print results
+print pd.DataFrame(results)

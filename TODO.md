@@ -18,3 +18,12 @@ x build something that grabs a single repo and predicts its near future.
 x import flask stuff to this repo
 x mvp
 
+x download Python repos
+- download Python weekly data
+
+- clean up downloading code
+- code to make new features
+
+- code to validate by k-fold
+
+- go over d3 book

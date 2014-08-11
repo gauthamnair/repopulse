@@ -20,10 +20,34 @@ def resampleToDays(weeklyCommits, daterange=None):
 def setIndexToWeekStartDate(df):
     df.index = pd.to_datetime([x.date() for x in df['week_start']])
 
+def pivotToDailyCommitsByAuthor(df):
+    result = df.pivot(index='week_start', columns='author_login', values='commits_num')
+    result = result.fillna(0)
+    result.index = pd.to_datetime([x.date() for x in result.index])
+    return resampleToDays(result)
+
 defaultFutureWindowInDays = 6*30
 
 def defaultTref():
 	return datetime.date(2014, 8, 6) - datetime.timedelta(defaultFutureWindowInDays)
+
+nsInADay = 10**9 * 3600 * 24
+
+def get_ZeroRuns(continuousSeries):
+    noActivity = continuousSeries == 0
+    different_from_last = noActivity.diff()
+    different_from_last[0] = False
+    gap_ends = continuousSeries[~noActivity & different_from_last].index.values
+    gap_starts = continuousSeries[noActivity & different_from_last].index.values
+    if len(gap_starts) > len(gap_ends):
+        gap_starts = gap_starts[:-1]
+    result = pd.DataFrame(data={'gap_start': gap_starts, 'gap_end' : gap_ends}, 
+        index = gap_ends)
+    result.index.name = 'gap_end'
+    gaps = result['gap_end'] - result['gap_start']
+    result['gap_length_days'] = gaps.values.astype(np.float64)/nsInADay
+    return result
+
 
 class FeatureMaker:
     def __init__(self, tref, futureWindowInDays=defaultFutureWindowInDays):
@@ -67,36 +91,87 @@ class FeatureMaker:
     def totalToDate(self, timeseries):
     	return timeseries.ix[:self.tref].sum()
 
+    def getEWMA(self, timeseries, timeScaleInDays=30):
+        ewmaseries = pd.ewma(timeseries.ix[:self.tref], com=timeScaleInDays)
+        if len(ewmaseries) == 0:
+            return 0
+        else:
+            return ewmaseries.values[-1]
+
+    def ewmaTwoWeeks(self, timeseries):
+        return self.getEWMA(timeseries, timeScaleInDays=14)
+
+    def ewmaOneMonth(self, timeseries):
+        return self.getEWMA(timeseries, timeScaleInDays=30)
+    
+    def ewmaThreeMonth(self, timeseries):
+        return self.getEWMA(timeseries, timeScaleInDays=30*3)
+
+    def ewmaSixMonth(self, timeseries):
+        return self.getEWMA(timeseries, timeScaleInDays=30*6)
+
+    def ewmaOneYear(self, timeseries):
+        return self.getEWMA(timeseries, timeScaleInDays=365)
+
     def makeBasicCommitsFeatureMakers(self):
         makers = {
             'futureCommits_num' :  self.totalInPeriodStarting,
             'pastCommits_num' : self.totalToDate,
             'daysSinceLastCommit' : self.daysSinceLastNonZero,
-            'daysSinceFirstCommit' : self.daysSinceOldestNonZero
+            'daysSinceFirstCommit' : self.daysSinceOldestNonZero,
+            'ewmaTwoWeeks' : self.ewmaTwoWeeks,
+            'ewmaOneMonth' : self.ewmaOneMonth,
+            'ewmaThreeMonth' : self.ewmaThreeMonth,
+            'ewmaSixMonth' : self.ewmaSixMonth,
+            'ewmaOneYear' : self.ewmaOneYear,
         }
-        return {'commits_num':makers}
+        return makers
 
-    def makeByAuthorFeatures(self, df):
-        grouped = df[['author_login','commits_num']].groupby(['author_login'])
-        aggregated = grouped.aggregate(self.makeBasicCommitsFeatureMakers())
-        # to get rid of multi-index
-        return aggregated['commits_num']
+    def makeByAuthorFeatures(self, dailyCommitsByAuthor):
+        makers = self.makeBasicCommitsFeatureMakers()
+        def makeFeatures(continuousSeries):
+            names, values = zip(*[(name,f(continuousSeries)) for (name,f) in makers.items()])
+            return pd.Series(values, index=names)
+        return dailyCommitsByAuthor.apply(makeFeatures).T
 
     basicFeatureAggregators = {
         'futureCommits_num': np.sum,
         'pastCommits_num' : np.sum,
         'daysSinceLastCommit' : np.min,
-        'daysSinceFirstCommit' : np.max
+        'daysSinceFirstCommit' : np.max,
+        'ewmaTwoWeeks' : np.sum,
+        'ewmaOneMonth' : np.sum,
+        'ewmaThreeMonth' : np.sum,
+        'ewmaSixMonth' : np.sum,
+        'ewmaOneYear' : np.sum,
     }
 
-    def aggregateBasicAuthorFeaturesToDict(self, df):
+    diversityFeatures = [
+        'pastCommits_num',
+        'ewmaTwoWeeks',
+        'ewmaOneMonth',
+        'ewmaThreeMonth',
+        'ewmaSixMonth',
+        'ewmaOneYear']
+
+    def aggregateBasicAuthorFeaturesToDict(self, byAuthorFeatures):
         aggregated = dict()
         for colName, aggregator in self.basicFeatureAggregators.items():
-            aggregated[colName] = aggregator(df[colName])
+            aggregated[colName] = aggregator(byAuthorFeatures[colName])
         return aggregated
 
-    def makeAuthorAggregatedFeatures(self, df):
-        byAuthor = self.makeByAuthorFeatures(df)
-        return self.aggregateBasicAuthorFeaturesToDict(byAuthor)
+    def makeGapsFeature(self, df):
+        aggregatedSeries = df['commits_num'].groupby(level=0).aggregate(np.sum)
+        gaps = get_ZeroRuns(resampleToDays(aggregatedSeries))
+        return(gaps)        
+
+    def makeFeatures(self, df):
+        dailyCommitsVsAuthor = pivotToDailyCommitsByAuthor(df)
+        byAuthor = self.makeByAuthorFeatures(dailyCommitsVsAuthor)
+        simpleAggregations = self.aggregateBasicAuthorFeaturesToDict(byAuthor)
+
+        return simpleAggregations
+
+
 
 
