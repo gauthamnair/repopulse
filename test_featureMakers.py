@@ -1,24 +1,28 @@
 import featureMakers
 import pandas as pd
 import pymysql as mdb
+import datetime
 con = mdb.connect('localhost', 'root', '', 'gitdb');
 
 query = "SELECT * FROM WeeklyContributions WHERE repo_full_name='hadley/plyr'"
 weekly = pd.io.sql.read_sql(query, con)
-# weekly.index = weekly['week_start']
+featureMakers.removeTimeFromWeekStartDate(weekly)
 
 hadleyWeekly = weekly[weekly['author_login'] == 'hadley']
 
 dailyCommitsByAuthor = featureMakers.pivotToDailyCommitsByAuthor(weekly)
 
 tref = featureMakers.defaultTref()
+# tref = datetime.date.today()
 
-fmaker = featureMakers.FeatureMaker(tref=featureMakers.defaultTref())
+fmaker = featureMakers.FeatureMaker(tref=tref)
 
 byAuthor = fmaker.makeByAuthorFeatures(dailyCommitsByAuthor)
 print byAuthor
 aggregated = fmaker.aggregateBasicAuthorFeaturesToDict(byAuthor)
 print aggregated
+diversity = fmaker.getAuthorDiversity(byAuthor)
+print diversity
 
 directlyAggregated = fmaker.makeFeatures(weekly)
 print directlyAggregated

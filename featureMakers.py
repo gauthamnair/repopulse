@@ -17,8 +17,8 @@ def resampleToDays(weeklyCommits, daterange=None):
     x = x.fillna(0)
     return x
 
-def setIndexToWeekStartDate(df):
-    df.index = pd.to_datetime([x.date() for x in df['week_start']])
+def removeTimeFromWeekStartDate(df):
+    df['week_start'] = pd.to_datetime([x.date() for x in df['week_start']])
 
 def pivotToDailyCommitsByAuthor(df):
     result = df.pivot(index='week_start', columns='author_login', values='commits_num')
@@ -48,6 +48,14 @@ def get_ZeroRuns(continuousSeries):
     result['gap_length_days'] = gaps.values.astype(np.float64)/nsInADay
     return result
 
+def getDiversity(series):
+    normalized = series.values.astype(np.float64) / series.sum()
+    if np.any(np.isnan(normalized)):
+        return np.nan
+    else:
+        entropyParts = np.where(normalized > 0,
+            - normalized * np.log(normalized), 0)
+        return np.exp(entropyParts.sum())
 
 class FeatureMaker:
     def __init__(self, tref, futureWindowInDays=defaultFutureWindowInDays):
@@ -154,6 +162,12 @@ class FeatureMaker:
         'ewmaSixMonth',
         'ewmaOneYear']
 
+    def getAuthorDiversity(self, byAuthorFeatures):
+        diversity = dict()
+        for colName in self.diversityFeatures:
+            diversity['diversity_' + colName] = getDiversity(byAuthorFeatures[colName])
+        return diversity
+
     def aggregateBasicAuthorFeaturesToDict(self, byAuthorFeatures):
         aggregated = dict()
         for colName, aggregator in self.basicFeatureAggregators.items():
@@ -165,12 +179,21 @@ class FeatureMaker:
         gaps = get_ZeroRuns(resampleToDays(aggregatedSeries))
         return(gaps)        
 
-    def makeFeatures(self, df):
-        dailyCommitsVsAuthor = pivotToDailyCommitsByAuthor(df)
-        byAuthor = self.makeByAuthorFeatures(dailyCommitsVsAuthor)
-        simpleAggregations = self.aggregateBasicAuthorFeaturesToDict(byAuthor)
+    def getGapStats(self, dailyCommits):
+        zeroRuns = get_ZeroRuns(dailyCommits).ix[:self.tref]
+        stats = zeroRuns['gap_length_days'].describe().to_dict()
+        return {'gapstats_'+k : v for (k,v) in stats.items()}
 
-        return simpleAggregations
+    def makeFeatures(self, df):
+        dailyCommitsByAuthor = pivotToDailyCommitsByAuthor(df)
+        byAuthor = self.makeByAuthorFeatures(dailyCommitsByAuthor)
+        features = self.aggregateBasicAuthorFeaturesToDict(byAuthor)
+
+        features.update(self.getAuthorDiversity(byAuthor))
+
+        dailyCommits = dailyCommitsByAuthor.sum(axis=1)
+        features.update(self.getGapStats(dailyCommits))
+        return features
 
 
 
