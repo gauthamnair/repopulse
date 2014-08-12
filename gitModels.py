@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy as sa
 import datetime
+import pandas as pd
 
 import logging
 
@@ -140,6 +141,7 @@ def storeWeeklyContributions(weeklyContributions, repo_full_name):
 def cacheWeeklyContributions(weeklyContributions, repo_full_name):
 	downloaded_on = datetime.datetime.today()
 
+	weeklyDBEntities = list()
 	for contributor in weeklyContributions:
 		author_login = contributor.author.login
 		weeks = [week for week in contributor.raw_data['weeks'] if week['c'] > 0]
@@ -155,20 +157,31 @@ def cacheWeeklyContributions(weeklyContributions, repo_full_name):
 				downloaded_on = downloaded_on
 			)
 			session.add(wm)
+			weeklyDBEntities.append(wm)
 
-def getOrClearCachedWeeklyData(repo_full_name):
-	baseQuery = session.query(CachedWeeklyContribution)
-	query = baseQuery.filter(
-		CachedWeeklyContribution.repo_full_name == repo_full_name)
-	weeks = query.all()
+	return weeklyDBEntities
+
+
+# query = "SELECT * FROM CachedWeeklyContributions WHERE repo_full_name = %s"
+# params = (repoString, )
+# z = pd.io.sql.read_sql_query(query, gitModels.engine, params=params)
+
+def getOrClearCachedWeeklyData(repo_full_name, expiryDays=2):
+
+	query = "SELECT * FROM CachedWeeklyContributions WHERE repo_full_name = %s"
+	params = (repo_full_name, )
+	weeks = pd.io.sql.read_sql_query(query, engine, params=params)
 
 	if len(weeks) == 0:
-		return weeks
+		return []
 
-	oldestAllowed = datetime.datetime.now() - datetime.timedelta(2)
+	oldestAllowed = datetime.datetime.now() - datetime.timedelta(expiryDays)
 
-	if any(week.downloaded_on < oldestAllowed for week in weeks):
-		session.delete(weeks)
+	if any(t < oldestAllowed for t in weeks['downloaded_on']):
+		baseQuery = session.query(CachedWeeklyContribution)
+		query = baseQuery.filter(
+			CachedWeeklyContribution.repo_full_name == repo_full_name)
+		query.delete()
 		session.commit()
 		return []
 	else:

@@ -54,9 +54,11 @@ x download Python weekly data (part 1)
 
 - build a short term github repo data cache module
 - make website grab from cache if available
+- make website load from json
 - extend website to more than one 
+x json data api endpoint
 x bootstrap the landing page
-- bootstrap the results page
+x bootstrap the results page
 - go over my old d3 practice
 - add graph
 

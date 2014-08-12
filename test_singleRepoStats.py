@@ -1,7 +1,7 @@
 import singleRepoStats
 
 repoString = 'hadley/plyr'
-print singleRepoStats.getRepoCommitsStats(repoString)
-probAlive = singleRepoStats.getPredictedProbAlive(repoString)
+z= singleRepoStats.getRepoWeeklyData(repoString)
+probAlive = singleRepoStats.getPredictedProbAlive(z)
 
 print probAlive
