@@ -1,27 +1,30 @@
-<html>
-<head>
-	<title>Is this code alive?</title>
-</head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Is This Code Alive?</title>
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
+    <script src="/static/js/probe.js"></script>
+  </head>
+
 <body>
-	<p> {{theTime}} </p>
-	<form action="/getresult" method="post">
-		<table>
-			<tr>
-				<td>
-					full name of an R git repository (ex: hadley/plyr or gentinex/kaggle)
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input name="repoString">
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="submit">
-				</td>
-			</tr>
-		</table>
-	</form>
+	<div class="container main-index">
+		<h1>repoPulse</h1>
+		<p class="lead">Enter the name of a github Repo</p>
+		<form action="/getresult" method="post">
+
+			<div class="form-group">
+				<input type="text" class="form-control" name="repoString" placeholder="Ex: hadley/plyr">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+    <script src="/static/jquery/js/jquery.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

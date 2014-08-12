@@ -13,6 +13,13 @@ started = datetime.datetime.today()
 repoString = 'hadley/plyr'
 pyGithubRepo = importer.getRepo(repoString)
 weeklyContributions = importer.getWeeklyContributions(pyGithubRepo)
-gitModels.storeWeeklyContributions(weeklyContributions, 
+gitModels.cacheWeeklyContributions(weeklyContributions, 
 	repo_full_name = repoString)
 session.commit()
+
+
+
+baseQuery = session.query(gitModels.CachedWeeklyContribution)
+query = baseQuery.filter(
+	gitModels.CachedWeeklyContribution.repo_full_name == repoString)
+weeks = query.all()

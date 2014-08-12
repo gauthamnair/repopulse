@@ -18,35 +18,45 @@ x build something that grabs a single repo and predicts its near future.
 x import flask stuff to this repo
 x mvp
 
-analysis
+# analysis
+
 - check that the EWMA code is doing the right thing. Diversity seems too big.
+- implement a learning curve visualizer
+- clean up feature-making tests
+- see if gaps can be reincorporated, replacing nans with zeros.
+- explore gap time distribution to discuss live/dead cutoff
+
 x code to make new features
 x write to Xavier
 x plot exploratory data vs. target
 x get cross-validation working
 x play with scaling explanatory variables
 x build a framework for experimentation around a scikit pipeline
-- implement a learning curve visualizer
 x first-pass optimize logistic Regression
 x try random forests and/or SVM.
-- clean up feature-making tests
 
-deployment
+# deployment
+
 x propagated feature-making/training changes up to the website.
 
-improve the data story
+# improve the data story
+
 - find concrete compelling use case example
 	(what was the vega/vincent alternative?)
-x download Python repos
+- continue download of Python weekly data
 - clean up downloading code
-- download Python weekly data
 
-user experience
+x download Python repos
+x download Python weekly data (part 1)
+
+
+# user experience
 
 - build a short term github repo data cache module
 - make website grab from cache if available
 - extend website to more than one 
-- bootstrap the website to make it look nice
+x bootstrap the landing page
+- bootstrap the results page
 - go over my old d3 practice
 - add graph
 

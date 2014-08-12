@@ -1,5 +1,7 @@
 *.json
 .ipynb_checkpoints/*
+static/bootstrap/
+static/jquery/
 data*
 log.txt
 success.txt
