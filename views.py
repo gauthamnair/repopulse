@@ -17,18 +17,8 @@ def mockpost():
 	repoString = request.args.get("repoString", '')
 	print repoString, "\n\n"
 
-	probAlive = singleRepoStats.getPredictedProbAlive(repoString)
-	print probAlive
-	return render_template("result.html", 
-		repoString=repoString)
-
-
-def mockpost_old():
-	print "\nThe Repo String is"
-	repoString = request.form["repoString"]
-	print repoString, "\n\n"
-
-	probAlive = singleRepoStats.getPredictedProbAlive(repoString)
+	weeklyData = singleRepoStats.getRepoWeeklyData(repoString)
+	probAlive = singleRepoStats.getPredictedProbAlive(weeklyData)
 	print probAlive
 	return render_template("result.html", 
 		repoString=repoString,
@@ -37,6 +27,7 @@ def mockpost_old():
 
 @app.route('/api/repo/<path:repoString>')
 def getRepoStats(repoString):
-	probAlive = singleRepoStats.getPredictedProbAlive(repoString)
+	weeklyData = singleRepoStats.getRepoWeeklyData(repoString)
+	probAlive = singleRepoStats.getPredictedProbAlive(weeklyData)
 	return jsonify({'repo_full_name' : repoString,
 		'probAlive' : probAlive})	
