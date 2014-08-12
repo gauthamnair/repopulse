@@ -2,6 +2,7 @@
 .ipynb_checkpoints/*
 static/bootstrap/
 static/jquery/
+static/d3/
 data*
 log.txt
 success.txt

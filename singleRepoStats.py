@@ -5,6 +5,7 @@ import featureMakers
 import datetime
 import productionModel
 import modelTools
+import time
 
 importer = gitImporter.importer
 
@@ -14,7 +15,13 @@ def getRepoWeeklyData(repo_full_name):
 
 	if len(cached) == 0:
 		pyGithubRepo = importer.getRepo(repo_full_name)
-		weeklyContributions = importer.getWeeklyContributions(pyGithubRepo)
+		while True:
+			weeklyContributions = importer.getWeeklyContributions(pyGithubRepo)
+			if weeklyContributions != None:
+				break
+			else:
+				time.sleep(1)
+
 		gitModels.cacheWeeklyContributions(weeklyContributions, 
 			repo_full_name = repo_full_name)
 		gitModels.session.commit()

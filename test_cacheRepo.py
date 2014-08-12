@@ -16,7 +16,7 @@ pyGithubRepo = importer.getRepo(repoString)
 weeklyContributions = importer.getWeeklyContributions(pyGithubRepo)
 
 
-x = gitModels.cacheWeeklyContributions(weeklyContributions, 
+gitModels.cacheWeeklyContributions(weeklyContributions, 
 	repo_full_name = repoString)
 session.commit()
 
