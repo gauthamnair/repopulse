@@ -4,6 +4,7 @@ data*
 log.txt
 success.txt
 failures.txt
+repologfile.txt
 log*.txt
 *.pkl*
 *.pyc

@@ -5,7 +5,7 @@ import datetime
 
 import logging
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 engine = create_engine("mysql+pymysql://root:@localhost/gitdb", echo=True)
 Base = declarative_base()
@@ -69,6 +69,19 @@ class WeeklyContribution(Base):
 	additions_num = Column(sa.Integer)
 	deletions_num = Column(sa.Integer)
 
+class CachedWeeklyContribution(Base):
+	__tablename__ = 'CachedWeeklyContributions'
+
+	id = Column(sa.Integer, primary_key=True)
+	author_login = Column(sa.Unicode(1024))
+	repo_full_name = Column(sa.Unicode(1024))
+	week_start = Column(sa.DateTime)
+	commits_num = Column(sa.Integer)
+	additions_num = Column(sa.Integer)
+	deletions_num = Column(sa.Integer)
+
+	downloaded_on = Column(sa.DateTime)
+
 
 Base.metadata.create_all(engine)
 
@@ -124,4 +137,39 @@ def storeWeeklyContributions(weeklyContributions, repo_full_name):
 			)
 			session.add(wm)
 
+def cacheWeeklyContributions(weeklyContributions, repo_full_name):
+	downloaded_on = datetime.datetime.today()
 
+	for contributor in weeklyContributions:
+		author_login = contributor.author.login
+		weeks = [week for week in contributor.raw_data['weeks'] if week['c'] > 0]
+
+		for week in weeks:
+			wm = CachedWeeklyContribution(
+				author_login=author_login,
+				repo_full_name=repo_full_name,
+				week_start=datetime.datetime.fromtimestamp(week['w']),
+				commits_num = week['c'],
+				additions_num = week['a'],
+				deletions_num = week['d'],
+				downloaded_on = downloaded_on
+			)
+			session.add(wm)
+
+def getOrClearCachedWeeklyData(repo_full_name):
+	baseQuery = session.query(CachedWeeklyContribution)
+	query = baseQuery.filter(
+		CachedWeeklyContribution.repo_full_name == repo_full_name)
+	weeks = query.all()
+
+	if len(weeks) == 0:
+		return weeks
+
+	oldestAllowed = datetime.datetime.now() - datetime.timedelta(2)
+
+	if any(week.downloaded_on < oldestAllowed for week in weeks):
+		session.delete(weeks)
+		session.commit()
+		return []
+	else:
+		return weeks

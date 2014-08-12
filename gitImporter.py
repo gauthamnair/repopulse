@@ -52,10 +52,14 @@ class GitDataImporter:
 		self.waitForAPILimitRefresh()
 		return self.g.get_repo(argsToGetRepo)
 
+
 	def getWeeklyContributions(self, repo):
+		self.waitForAPILimitRefresh()
+		return repo.get_stats_contributors()
+
+	def getWeeklyContributionsWithRetryIfNone(self, repo):
 		while True:
-			self.waitForAPILimitRefresh()
-			weeklyContributions = repo.get_stats_contributors()
+			weeklyContributions = self.getWeeklyContributions(repo)
 			if weeklyContributions == None:
 				time.sleep(2)
 			else:
