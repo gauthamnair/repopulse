@@ -47,14 +47,15 @@ x propagated feature-making/training changes up to the website.
 - clean up downloading code
 
 x download Python repos
-x download Python weekly data (part 1)
+x download Python weekly data
+- get Python weekly stragglers
 
 
 # user experience
 
-- build a short term github repo data cache module
-- make website grab from cache if available
-- make website load from json
+x build a short term github repo data cache module
+x make website grab from cache if available
+x make website load from json
 - extend website to more than one 
 x json data api endpoint
 x bootstrap the landing page
