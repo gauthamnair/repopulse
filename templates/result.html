@@ -1,11 +1,24 @@
-<html>
-<head>
-	<title>Is this code alive?</title>
-</head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Is This Code Alive?</title>
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
+  </head>
+
 <body>
-	<p> {{repoString}}</p>
-	<p> probability of any commits in next six months: </p>
-	<p> {{ probAlive }} </p>
-	<a href="/index">try another repo</a>
+	<div class="container main-index">
+		<h1>{{repoString}}</h1>
+		<p class="lead">probability of any commits in next six months:</p>
+		<h1>{{ probAlive }}</h1>
+		<a href="/index">try another repo</a>
+	</div>
+    <script src="/static/jquery/js/jquery.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
