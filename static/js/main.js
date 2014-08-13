@@ -49,7 +49,7 @@ function RepoPulseResult(repoString, view) {
 	var public = {};
 	var doOnLoadJson;
 	var loadRepoData;
-	
+
 	public.repoString = repoString;
 	
 	doOnLoadJson = function(error, json) {
@@ -74,4 +74,7 @@ var submitRepoString = function() {
 	results.push(repoResult);
 };
 
-var d = d3.select('#resultsPane');
+d3.select("#newRepoForm").on('submit', function() {
+	d3.event.preventDefault();
+	submitRepoString();
+	});

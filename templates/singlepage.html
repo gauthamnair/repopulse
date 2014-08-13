@@ -15,14 +15,12 @@
 	<div class="container main-index">
 		<h1>repoPulse</h1>
 		<p class="lead">Enter the name of a github Repo</p>
-
-			<div class="form-group">
-				<input type="text" class="form-control" name="repoString" value="hadley/plyr" id="repoString" placeholder="Ex: hadley/plyr">
-			</div>
-			<button onclick="submitRepoString()" class="btn btn-primary">Submit</button>
-
-            <h1 id="repoHeading"></h1>
-            <h1 id="repoResult"></h1>
+            <form id="newRepoForm">
+    			<div class="form-group">
+    				<input type="text" class="form-control" name="repoString" value="hadley/plyr" id="repoString" placeholder="Ex: hadley/plyr">
+    			</div>
+    			<button type="submit" class="btn btn-primary">Submit</button>
+            </form>
 
             <div class="container" id="resultsPane">
             </div>
