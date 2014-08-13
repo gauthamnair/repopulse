@@ -8,7 +8,7 @@ var CommitsGraph = function(parentSelection, dataset) {
 	var lines;
 	var enteringAes;
 	var aes;
-	var yPadding = 30;
+	var yPadding = 20;
 	var leftPadding = 50;
 	var rightPadding = 30;
 	var xAxisMaker;
@@ -129,9 +129,3 @@ var draw = function() {
 draw();
 
 };
-
-
-
-d3.json('/api/repo/torvalds/linux', function(error, json) {
-	CommitsGraph(d3.select('body'), json['weeks']);
-});
