@@ -11,6 +11,7 @@ function ResultView() {
 	var headingDisplay;
 	var probabilityDisplay;
 	var deleteButton;
+	var cgraph;
 
 	var public = {};
 
@@ -32,6 +33,7 @@ function ResultView() {
 			probabilityDisplay.text('...');
 		} else {
 			probabilityDisplay.text(result.data.probAlive.toPrecision(2));
+			cgraph = CommitsGraph(localSelection, result.data['weeks']);
 		}
 	};
 

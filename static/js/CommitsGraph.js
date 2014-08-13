@@ -127,5 +127,6 @@ var draw = function() {
 
 
 draw();
+return svg;
 
 };
