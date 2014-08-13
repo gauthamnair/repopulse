@@ -1,4 +1,4 @@
-var data;
+var results = [];
 
 var urlToRepoData = function(repoString) {
 	return "/api/repo/" + repoString;
@@ -6,39 +6,72 @@ var urlToRepoData = function(repoString) {
 
 var resultsPane = d3.select('#resultsPane');
 
-function RepoPulseResult(repoString) {
-	var publicSelf = {};
+function ResultView() {
 	var localSelection;
+	var headingDisplay;
+	var probabilityDisplay;
+	var deleteButton;
+
+	var public = {};
+
+	var initialize = function() {
+		localSelection = resultsPane.append('div');
+		headingDisplay = localSelection.append('h1');
+		probabilityDisplay = localSelection.append('h1');
+		deleteButton = localSelection.append('button');
+		deleteButton.text('clear');
+		deleteButton.on('click', public.remove);
+	};
+
+	public.render = function(result) {
+		if (localSelection === undefined) {
+			initialize();
+		}
+		headingDisplay.text(result.repoString);
+		if (result.data === undefined) {
+			probabilityDisplay.text('...');
+		} else {
+			probabilityDisplay.text(result.data.probAlive.toPrecision(2));
+		}
+	};
+
+	public.remove = function() {
+		if (localSelection !== undefined) {
+			localSelection.remove();
+		}
+		localSelection = undefined;
+	};
+
+	return public;
+}
+
+function RepoPulseResult(repoString, view) {
+	var public = {};
 	var doOnLoadJson;
 	var loadRepoData;
-	var data;
-	var render;
+	
+	public.repoString = repoString;
 	
 	doOnLoadJson = function(error, json) {
 		if (error) return console.warn(error);
-		data = json;
-		render();
+		public.data = json;
+		view.render(public);
 	};
 
-	publicSelf.load = function() {
+	public.load = function() {
+		view.render(public);
 		console.log('requesting ' + repoString);
 		d3.json(urlToRepoData(repoString), doOnLoadJson);
 	};
 
-	render = function(){
-		localSelection = resultsPane.append('div');
-		var heading = localSelection.append('h1');
-		var prob = localSelection.append('h1');
-		heading.text(repoString);
-		prob.text(data.probAlive.toPrecision(2));
-	};
-
-	return publicSelf;
+	return public;
 }
 
 var submitRepoString = function() {
 	var repoString = d3.select("#repoString").property('value');
-	RepoPulseResult(repoString).load();
+	var repoResult = RepoPulseResult(repoString, ResultView());
+	repoResult.load();
+	results.push(repoResult);
 };
 
 var d = d3.select('#resultsPane');
