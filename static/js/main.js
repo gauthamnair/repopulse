@@ -75,8 +75,15 @@ function RepoPulseResult(repoString, view) {
 	return public;
 }
 
+var normalizeRepoString = function(repoString) {
+	var cleaned = repoString.replace(/^https:\/\//, '');
+	cleaned = cleaned.replace(/^github\.com\//, '');
+	return cleaned;
+};
+
 var submitRepoString = function() {
 	var repoString = d3.select("#repoString").property('value');
+	repoString = normalizeRepoString(repoString);
 	var repoResult = RepoPulseResult(repoString, ResultView());
 	repoResult.load();
 	results.push(repoResult);
