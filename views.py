@@ -33,5 +33,6 @@ def mockpost():
 def getRepoStats(repoString):
 	weeklyData = singleRepoStats.getRepoWeeklyData(repoString)
 	probAlive = singleRepoStats.getPredictedProbAlive(weeklyData)
+	weeks = singleRepoStats.getTotalCommitsByWeek(weeklyData)
 	return jsonify({'repo_full_name' : repoString,
-		'probAlive' : probAlive})	
+		'probAlive' : probAlive, 'weeks' : weeks})	

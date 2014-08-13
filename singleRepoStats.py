@@ -29,6 +29,13 @@ def getRepoWeeklyData(repo_full_name):
 
 	return cached
 
+def getTotalCommitsByWeek(weeklyData):
+	weeklyTotal = weeklyData.pivot(index='week_start', 
+		columns='author_login', values='commits_num').sum(axis=1)
+	return [{'week_start': str(t.date()), 'commits_num': c} 
+		for (t,c) 
+		in zip(weeklyTotal.index, weeklyTotal.values)]
+
 def getPredictedProbAlive(weeklyData):
 	featureMakers.removeTimeFromWeekStartDate(weeklyData)
 	tref = datetime.date.today()
