@@ -8,6 +8,8 @@ var resultsPane = d3.select('#resultsPane');
 
 function ResultView() {
 	var localSelection;
+	var leftSide;
+	var rightSide;
 	var headingDisplay;
 	var probabilityDisplay;
 	var deleteButton;
@@ -16,10 +18,12 @@ function ResultView() {
 	var public = {};
 
 	var initialize = function() {
-		localSelection = resultsPane.append('div');
-		headingDisplay = localSelection.append('h1');
-		probabilityDisplay = localSelection.append('h1');
-		deleteButton = localSelection.append('button');
+		localSelection = resultsPane.append('tr');
+		leftSide = localSelection.append('td');
+		rightSide = localSelection.append('td');
+		headingDisplay = rightSide.append('h1');
+		probabilityDisplay = rightSide.append('h1');
+		deleteButton = rightSide.append('button');
 		deleteButton.text('clear');
 		deleteButton.on('click', public.remove);
 	};
@@ -33,7 +37,9 @@ function ResultView() {
 			probabilityDisplay.text('...');
 		} else {
 			probabilityDisplay.text(result.data.probAlive.toPrecision(2));
-			cgraph = CommitsGraph(localSelection, result.data['weeks']);
+			console.log(leftSide)
+			myglobal = leftSide;
+			cgraph = CommitsGraph(leftSide, result.data['weeks']);
 		}
 	};
 

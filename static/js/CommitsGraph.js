@@ -1,7 +1,7 @@
 var CommitsGraph = function(parentSelection, dataset) {
 
 	var w = 500;
-	var h = 200;
+	var h = 150;
 	var svg;
 	var xScale;
 	var yScale;
@@ -10,12 +10,12 @@ var CommitsGraph = function(parentSelection, dataset) {
 	var aes;
 	var yPadding = 20;
 	var leftPadding = 50;
-	var rightPadding = 30;
+	var rightPadding = 20;
 	var xAxisMaker;
 	var yAxisMaker;
 
 	var makeSVG = function() {
-		svg = d3.select("body")
+		svg = parentSelection
 		.append("svg")
 		.attr("width", w)
 		.attr("height", h);
