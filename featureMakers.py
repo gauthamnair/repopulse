@@ -28,10 +28,15 @@ def pivotToDailyCommitsByAuthor(df):
 
 defaultFutureWindowInDays = 6*30
 
+def today():
+    return datetime.date(2014, 8, 6)
+
 def defaultTref():
-	return datetime.date(2014, 8, 6) - datetime.timedelta(defaultFutureWindowInDays)
+	return today() - datetime.timedelta(defaultFutureWindowInDays)
+
 
 nsInADay = 10**9 * 3600 * 24
+
 
 def get_ZeroRuns(continuousSeries):
     noActivity = continuousSeries == 0
@@ -58,11 +63,14 @@ def getDiversity(series):
         return np.exp(entropyParts.sum())
 
 class FeatureMaker:
-    def __init__(self, tref, futureWindowInDays=defaultFutureWindowInDays):
+    def __init__(self, tref, futureWindowInDays=defaultFutureWindowInDays, 
+        daysToWaitBeforeFuture=daysInWeek):
         self.tref = tref
+        self.daysToWaitBeforeFuture = daysToWaitBeforeFuture
         self.futureWindowInDays = futureWindowInDays
 
     def totalInPeriodStarting(self, timeseries):
+        tstart = self.tref + datetime.timedelta(self.daysToWaitBeforeFuture)
     	tfuture = self.tref + datetime.timedelta(self.futureWindowInDays)
     	return timeseries.ix[self.tref : tfuture].sum()
 
@@ -172,12 +180,7 @@ class FeatureMaker:
         aggregated = dict()
         for colName, aggregator in self.basicFeatureAggregators.items():
             aggregated[colName] = aggregator(byAuthorFeatures[colName])
-        return aggregated
-
-    def makeGapsFeature(self, df):
-        aggregatedSeries = df['commits_num'].groupby(level=0).aggregate(np.sum)
-        gaps = get_ZeroRuns(resampleToDays(aggregatedSeries))
-        return(gaps)        
+        return aggregated      
 
     def getGapStats(self, dailyCommits):
         zeroRuns = get_ZeroRuns(dailyCommits).ix[:self.tref]
@@ -198,3 +201,7 @@ class FeatureMaker:
 
 
 
+def getCommitsGaps(dailyCommitsByAuthor):
+    dailyCommits = dailyCommitsByAuthor.sum(axis=1)
+    dailyCommitsResampled = resampleToDays(dailyCommits)
+    return get_ZeroRuns(dailyCommitsResampled)

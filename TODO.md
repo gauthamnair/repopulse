@@ -25,15 +25,8 @@ x mvp
 - clean up feature-making tests
 - see if gaps can be reincorporated, replacing nans with zeros.
 - explore gap time distribution to discuss live/dead cutoff
+- graph how quickly the algorithm predicts death for a repo.
 
-x code to make new features
-x write to Xavier
-x plot exploratory data vs. target
-x get cross-validation working
-x play with scaling explanatory variables
-x build a framework for experimentation around a scikit pipeline
-x first-pass optimize logistic Regression
-x try random forests and/or SVM.
 
 # deployment
 
@@ -43,26 +36,14 @@ x propagated feature-making/training changes up to the website.
 
 - find concrete compelling use case example
 	(what was the vega/vincent alternative?)
-- continue download of Python weekly data
 - clean up downloading code
-
-x download Python repos
-x download Python weekly data
 - get Python weekly stragglers
+
 
 
 # user experience
 
-x build a short term github repo data cache module
-x make website grab from cache if available
-x make website load from json
-- extend website to more than one 
-x json data api endpoint
-x bootstrap the landing page
-x bootstrap the results page
-- go over my old d3 practice
-- add graph
-
+- fix ticks
 
 Notes from talking to Div and Brandon:
 

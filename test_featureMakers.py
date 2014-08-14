@@ -27,6 +27,12 @@ print diversity
 directlyAggregated = fmaker.makeFeatures(weekly)
 print directlyAggregated
 
+
+# dailyCommits = dailyCommitsByAuthor.sum(axis=1)
+# dailyCommitsResampled = featureMakers.resampleToDays(dailyCommits)
+# gapsOnly = featureMakers.get_ZeroRuns(dailyCommitsResampled)
+gapsOnly = featureMakers.getCommitsGaps(dailyCommitsByAuthor)
+
 query = '''
 SELECT * FROM WeeklyContributions 
 WHERE repo_full_name IN ('hadley/plyr', 'hadley/ggplot2')
