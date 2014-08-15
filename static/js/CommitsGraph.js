@@ -4,7 +4,7 @@ var CommitsGraph = function(parentSelection, dataset) {
 
 	obj.parentSelection = parentSelection;
 	obj.dataset = dataset;
-	obj.w = 500;
+	obj.w = 400;
 	obj.h = 150;
 	obj.yPadding = 20;
 	obj.leftPadding = 50;
@@ -60,7 +60,7 @@ obj.setAesthetics = function() {
 			return obj.yScale(getCommits(d));
 		// return 0;
 	},
-	'stroke' : 'black'
+	'stroke' : 'blue'
 };
 };
 

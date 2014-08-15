@@ -6,11 +6,9 @@ import singleRepoStats
 
 db = mdb.connect(user="root", host="localhost", db="world_innodb", charset='utf8')
 
+
 @app.route('/')
 @app.route('/index')
-def index():
-	return render_template("index.html", theTime=datetime.datetime.today())
-
 @app.route('/singlepage')
 def singlepage():
 	return render_template("singlepage.html", theTime=datetime.datetime.today())

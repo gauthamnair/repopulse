@@ -43,4 +43,8 @@ dev.off()
 
 
 q_age <- ggplot(features, aes(x=daysSinceFirstCommit/365)) + geom_bar()
+q_age <- q_age + xlab('age in years') + xlim(0, 10)
+
+pdf(graphFileName('ageDistribution'), width=6, height=4.5)
 print(q_age)
+dev.off()
