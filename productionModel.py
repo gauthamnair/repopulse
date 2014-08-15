@@ -2,6 +2,7 @@ from sklearn import linear_model
 import sklearn.preprocessing
 import sklearn.pipeline
 import sklearn.metrics
+import sklearn.ensemble
 from sklearn.externals import joblib
 
 import trainingData

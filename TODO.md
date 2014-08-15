@@ -18,13 +18,20 @@ x build something that grabs a single repo and predicts its near future.
 x import flask stuff to this repo
 x mvp
 
+
+# Friday items
+- find concrete compelling use case example
+	(what was the vega/vincent alternative?)
+- show how much of the effect is predicted by daysSinceLastCommit
+- try a fit without daysSinceLastCommit
+
 # analysis
 
+x explore gap time distribution to discuss live/dead cutoff
 - check that the EWMA code is doing the right thing. Diversity seems too big.
 - implement a learning curve visualizer
 - clean up feature-making tests
 - see if gaps can be reincorporated, replacing nans with zeros.
-- explore gap time distribution to discuss live/dead cutoff
 - graph how quickly the algorithm predicts death for a repo.
 
 
@@ -34,11 +41,8 @@ x propagated feature-making/training changes up to the website.
 
 # improve the data story
 
-- find concrete compelling use case example
-	(what was the vega/vincent alternative?)
 - clean up downloading code
 - get Python weekly stragglers
-
 
 
 # user experience

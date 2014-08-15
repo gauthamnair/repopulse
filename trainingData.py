@@ -29,6 +29,7 @@ def computeAndSaveToFile(
 			commitStatsByRepoDicts.append(features)
 
 	commitStatsByRepo = pd.DataFrame(commitStatsByRepoDicts)
+	commitStatsByRepo['tref'] = pd.to_datetime(tref)
 
 	def removeReposCreatedAfterTref(df):
 		return df[~ df['daysSinceLastCommit'].isnull()]

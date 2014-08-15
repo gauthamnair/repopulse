@@ -23,14 +23,15 @@ scaledLogistic = sklearn.pipeline.Pipeline(
 	[('scaler', sklearn.preprocessing.StandardScaler()),
 	('logistic', linear_model.LogisticRegression())]) 
 reportScaledLogistic = evaluateModel(scaledLogistic)
+print reportScaledLogistic.classification_report()
 
-Cvalues = [0.0001, 0.001, 0.01, 0.1, 1, 10, 100]
-results = []
-for C in Cvalues:
-	scaledLogistic.set_params(logistic__C=C)
-	results.append(evaluateModel(scaledLogistic))
-for c, result in zip(Cvalues, results):
-	print c, ': auc=', result.auc()
+# Cvalues = [0.0001, 0.001, 0.01, 0.1, 1, 10, 100]
+# results = []
+# for C in Cvalues:
+# 	scaledLogistic.set_params(logistic__C=C)
+# 	results.append(evaluateModel(scaledLogistic))
+# for c, result in zip(Cvalues, results):
+# 	print c, ': auc=', result.auc()
 
 reportForest = evaluateModel(learner = sklearn.ensemble.RandomForestClassifier())
 print reportForest.classification_report()

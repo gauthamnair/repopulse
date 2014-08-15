@@ -29,8 +29,7 @@ _predColumns = ['daysSinceFirstCommit',
   'ewmaTwoWeeks',
   'pastCommits_num']
 
-def makePredictors(byRepo):
-	predColumns = _predColumns
+def makePredictors(byRepo, predColumns = _predColumns):
 	dfX = byRepo[predColumns]
 	return (dfX.values, predColumns)
 

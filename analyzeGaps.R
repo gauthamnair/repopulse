@@ -39,3 +39,8 @@ print(q_gaps + xlim(0,3.5), vp = viewport(layout.pos.row=1))
 print(q_longest + xlim(0,3.5), vp = viewport(layout.pos.row=2))
 print(q_lastcommit + xlim(0,3.5), vp = viewport(layout.pos.row=3))
 dev.off()
+
+
+
+q_age <- ggplot(features, aes(x=daysSinceFirstCommit/365)) + geom_bar()
+print(q_age)

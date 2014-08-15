@@ -1,58 +1,63 @@
 var CommitsGraph = function(parentSelection, dataset) {
 
-	var w = 500;
-	var h = 150;
-	var svg;
-	var xScale;
-	var yScale;
-	var lines;
-	var enteringAes;
-	var aes;
-	var yPadding = 20;
-	var leftPadding = 50;
-	var rightPadding = 20;
-	var xAxisMaker;
-	var yAxisMaker;
+	var obj = {};
 
-	var makeSVG = function() {
-		svg = parentSelection
+	obj.parentSelection = parentSelection;
+	obj.dataset = dataset;
+	obj.w = 500;
+	obj.h = 150;
+	obj.yPadding = 20;
+	obj.leftPadding = 50;
+	obj.rightPadding = 20;
+
+	obj.svgSelection = undefined;
+	obj.xScale = undefined;
+	obj.yScale = undefined;
+	obj.lines = undefined;
+	obj.enteringAes = undefined;
+	obj.aes = undefined;
+	obj.xAxisMaker = undefined;
+	obj.yAxisMaker = undefined;
+
+	obj.makeSVG = function() {
+		obj.svgSelection = obj.parentSelection
 		.append("svg")
-		.attr("width", w)
-		.attr("height", h);
+		.attr("width", obj.w)
+		.attr("height", obj.h);
 	};
 
 
-	var setEnteringAesthetics = function() {
-		enteringAes = {
+	obj.setEnteringAesthetics = function() {
+		obj.enteringAes = {
 			'x1' : function(d) {
-				return xScale(getDate(d));
+				return obj.xScale(getDate(d));
 			},
 			'x2' : function(d) {
-				return xScale(getDate(d));
+				return obj.xScale(getDate(d));
 			},
 			'y1' : function(d) {
-				return yScale(0);
+				return obj.yScale(0);
 			},
 			'y2' : function(d) {
-				return yScale(0);
+				return obj.yScale(0);
 		// return 0;
 	}
 };
 };
 
-var setAesthetics = function() {
-	aes = {
+obj.setAesthetics = function() {
+	obj.aes = {
 		'x1' : function(d) {
-			return xScale(getDate(d));
+			return obj.xScale(getDate(d));
 		},
 		'x2' : function(d) {
-			return xScale(getDate(d));
+			return obj.xScale(getDate(d));
 		},
 		'y1' : function(d) {
-			return yScale(0);
+			return obj.yScale(0);
 		},
 		'y2' : function(d) {
-			return yScale(getCommits(d));
+			return obj.yScale(getCommits(d));
 		// return 0;
 	},
 	'stroke' : 'black'
@@ -67,13 +72,13 @@ var getCommits = function(row) {
 	return row.commits_num;
 };
 
-var setScales = function() {
-	xScale = d3.time.scale();
-	xScale.domain([d3.min(dataset, getDate), new Date()]);
-	xScale.range([leftPadding, w - rightPadding], 0.05);
-	yScale = d3.scale.linear()
+obj.setScales = function() {
+	obj.xScale = d3.time.scale();
+	obj.xScale.domain([d3.min(obj.dataset, getDate), new Date()]);
+	obj.xScale.range([obj.leftPadding, obj.w - obj.rightPadding], 0.05);
+	obj.yScale = d3.scale.linear()
 	.domain([0, d3.max(dataset, getCommits)])
-	.range([h - yPadding, yPadding]);
+	.range([obj.h - obj.yPadding, obj.yPadding]);
 };
 
 formatter = d3.time.format("%Y-%m-%d");
@@ -84,49 +89,49 @@ var parseDates = function(weeks) {
 	}
 };
 
-var specifyAxes = function() {
-	xAxisMaker = d3.svg.axis()
-	.scale(xScale)
+obj.specifyAxes = function() {
+	obj.xAxisMaker = d3.svg.axis()
+	.scale(obj.xScale)
 	.orient('bottom');
-	yAxisMaker = d3.svg.axis()
-	.scale(yScale)
+	obj.yAxisMaker = d3.svg.axis()
+	.scale(obj.yScale)
 	.orient('left');
-	yAxisMaker.ticks(5);
+	obj.yAxisMaker.ticks(5);
 };
 
-var drawAxes = function() {
-	var translateXAxisToBottomCmd = 'translate(0,' + (h - yPadding).toString() + ')';
-	var translateYAxisToLeftCmd = 'translate(' + leftPadding.toString() + ',0)';
-	svg.append('g')
+obj.drawAxes = function() {
+	var translateXAxisToBottomCmd = 'translate(0,' + (obj.h - obj.yPadding).toString() + ')';
+	var translateYAxisToLeftCmd = 'translate(' + obj.leftPadding.toString() + ',0)';
+	obj.svgSelection.append('g')
 	.attr('class', 'axis')
 	.attr('transform', translateXAxisToBottomCmd)
-	.call(xAxisMaker);
-	svg.append('g')
+	.call(obj.xAxisMaker);
+	obj.svgSelection.append('g')
 	.attr('class', 'axis')
 	.attr('transform', translateYAxisToLeftCmd)
-	.call(yAxisMaker);
+	.call(obj.yAxisMaker);
 };
 
-var draw = function() {
-	parseDates(dataset);
-	makeSVG();
-	setScales();
-	setEnteringAesthetics();
-	setAesthetics();
-	specifyAxes();
-	drawAxes();
-	var commitsLines = svg.append('g').attr('class', 'commitsLines');
-	lines = commitsLines.selectAll('line').data(dataset).enter().append('line').attr(enteringAes);
-	lines.transition()
+obj.draw = function() {
+	parseDates(obj.dataset);
+	obj.makeSVG();
+	obj.setScales();
+	obj.setEnteringAesthetics();
+	obj.setAesthetics();
+	obj.specifyAxes();
+	obj.drawAxes();
+	var commitsLines = obj.svgSelection.append('g').attr('class', 'commitsLines');
+	obj.lines = commitsLines.selectAll('line').data(dataset).enter().append('line').attr(obj.enteringAes);
+	obj.lines.transition()
 	.delay(function(d,i) {
 		return i * 10;
 	})
 	.duration(0)
-	.attr(aes);
+	.attr(obj.aes);
 };
 
 
-draw();
-return svg;
+obj.draw();
+return obj;
 
 };
