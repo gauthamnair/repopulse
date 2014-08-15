@@ -17,7 +17,6 @@ y = modelTools.makeTarget(byRepo)
 
 allColumns = modelTools._predColumns
 
-print "using all predictors"
 
 def evaluatePredictors(predColumns = allColumns):
 	learner = sklearn.pipeline.Pipeline(
@@ -33,18 +32,19 @@ def evaluatePredictors(predColumns = allColumns):
 	print "auc:", report.auc()
 
 	learner.fit(X, y)
-	return (learner, colNames)
+	return (learner, colNames, report.auc())
 
 
 def effectOfExcludingColumns(toExclude):
 	print "excluding ", toExclude, ":"
-	(learner, colNames) = evaluatePredictors(predColumns=[p for p in allColumns if p not in toExclude])
+	(learner, colNames, auc) = evaluatePredictors(predColumns=[p for p in allColumns if p not in toExclude])
 	logistic = learner.named_steps['logistic']
-	print pd.Series(data=np.concatenate( (logistic.coef_[0], logistic.intercept_) ), 
+	coefs = pd.Series(data=np.concatenate( (logistic.coef_[0], logistic.intercept_) ), 
 		index = colNames + ['intercept'])
-	print "\n\n\n"
+	print coefs
+	return (coefs, auc)
 
-
+print "using all predictors"
 effectOfExcludingColumns([])
 
 toExclude = ['daysSinceLastCommit']
