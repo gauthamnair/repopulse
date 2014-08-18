@@ -11,3 +11,7 @@ repologfile.txt
 log*.txt
 *.pkl*
 *.pyc
+.DS_Store
+tex/*.aux
+tex/*.log
+tex/*.pdf

@@ -42,9 +42,48 @@ dev.off()
 
 
 
+q_gapsecdf <- ggplot(data=NULL) + 
+	stat_ecdf(data=gaps, aes(x=gap_length_days / 30)) +
+	theme_bw() +
+	xlab('months') +
+	ylab('cumulative distribution') +
+	scale_x_continuous(breaks=seq(0,12,2), limits=c(0,12))
+print(q_gapsecdf)
+
+
+makeECDF <- function(gap_lengths, days=c(0:365)){
+	gapsecdf <- ecdf(gap_lengths)
+	return(data.frame(days=days, prob=gapsecdf(days)))
+}
+
+q_gapsecdf <- ggplot(data=makeECDF(gaps$gap_length_days)) + 
+	geom_line(aes(x=days / 30, y=prob, group=1)) +
+	theme_bw() +
+	xlab('months') +
+	ylab('cumulative distribution') +
+	scale_x_continuous(breaks=seq(0,12,2), limits=c(0,12)) +
+	ylim(0, 1)
+
+pdf(graphFileName('gapsECDF_linear'), width=3, height=2.7)
+print(q_gapsecdf)
+dev.off()
+
+
 q_age <- ggplot(features, aes(x=daysSinceFirstCommit/365)) + geom_bar()
 q_age <- q_age + xlab('age in years') + xlim(0, 10)
 
 pdf(graphFileName('ageDistribution'), width=6, height=4.5)
 print(q_age)
 dev.off()
+
+
+
+
+q <- ggplot(features, aes(x=gapstats_max, y=gapstats_mean))
+q <- q + geom_point()
+print(q)
+
+q <- ggplot(features, aes(x=gapstats_max, y=daysSinceLastCommit))
+q <- q + geom_bin2d()
+q <- q + scale_fill_gradientn(colours=rainbow(7), trans='sqrt')
+print(q)

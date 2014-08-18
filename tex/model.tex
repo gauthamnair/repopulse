@@ -1,0 +1,34 @@
+\documentclass{article}
+\begin{document}
+
+The model as is:
+
+\begin{displaymath}
+p(x) = \frac{1}{1+e^{-g(x)}}
+\end{displaymath}
+
+The vector x, computed at a reference time $t$ is composed of the following:
+
+\begin{itemize}
+\item Time since last commit $= T(t)$
+
+\item exponentially weighted moving averages of commit rates over time scales $\tau_i$. These are $c(\tau_i, t)$. These go as:
+\begin{displaymath}
+c(\tau_i, t ) = c(\tau_i, t - T) e^{-k_i T}
+\end{displaymath}
+
+\item Diversity metrics. Since these are all ratios of exponentially weighted moving averages with the same lifetime, there is no change in these during a no-commits gap.
+
+\item Past Commits. The total number of past commits does not change during a no-commits gap.
+
+\item Age. The age of the repository increases linearly with T. Supposing $t_0$ is the age at the time of the most recent commit, Age $= t_0 + T$. 
+
+\end{itemize}
+
+Therefore the part of $g(x)$ that depends on $T$ looks like:
+
+\begin{displaymath}
+b_{T}T + \sum_i b_{c(\tau_i)} c(\tau_i, t-T) e^{-k_i T} + b_{age}T
+\end{displaymath}
+
+\end{document}
