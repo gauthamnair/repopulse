@@ -1,12 +1,15 @@
 var data;
-var tableSelection;
 var pstuff;
-
+var table;
+var tbody;
+var thead;
+var rows;
+var cells;
 
 var createTable = function(columnNames) {
-    var table = d3.select("#schools");
-    var thead = table.append("thead");
-    var tbody = table.append("tbody");
+    table = d3.select("#schools");
+    thead = table.append("thead");
+    tbody = table.append("tbody");
     // append the header row
     thead.append("tr")
         .selectAll("th")
@@ -17,15 +20,37 @@ var createTable = function(columnNames) {
 };
 
 
+var makeRows = function(rowsData){
+    rows = tbody.selectAll("tr")
+        .data(rowsData)
+        .enter()
+        .append("tr");
+};
+
+var makeLabeledDatum = function(row, columnName) {
+	return {column: columnName, value: row[columnName]};
+};
+
+var Labelizer = function(row, columnNames) {
+	return columnNames.map(function(columnName){
+		return makeLabeledDatum(row, columnName);
+	});
+};
+
+var makeCells = function() {
+	rows.selectAll("td")
+        .data(function(row) {
+            return Labelizer(row, data.schoolColNames);
+        })
+        .enter()
+        .append("td")
+            .text(function(d) { return d.value; });
+};
 
 d3.json('/static/schoolsEasy.json', function(error, json) {
 	data = json;
-	tableSelection = d3.select('#schools');
-	pstuff = tableSelection.selectAll('tr').data(data['school']);
-	// pstuff.enter().append('tr').text(function (d) {
-	// 	return d[0];
-	// });
-	pstuff.enter().append('tr').append('td').text(function (d) {
-		return d['name'];
-	});
+
+	createTable(data.schoolColNames);
+	makeRows(data['school']);
+	makeCells();
 });
