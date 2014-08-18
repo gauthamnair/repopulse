@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Is This Code Alive?</title>
+    <title>activeGitHub</title>
 
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/index.css" rel="stylesheet">
@@ -14,15 +14,15 @@
 
 <body>
 	<div class="container main-index">
-		<h1>repoPulse</h1>
-		<p class="lead">Enter the name of a github Repo</p>
+		<h1>activeGitHub</h1>
+
+		<p class="lead">Enter the name of a github repository. <br> We'll forecast the chances that it'll have any commits in the next six months. </p>
             <form id="newRepoForm">
     			<div class="form-group">
-    				<input type="text" class="form-control" name="repoString" value="hadley/plyr" id="repoString" placeholder="Ex: hadley/plyr">
+    				<input type="text" class="form-control" name="repoString"  id="repoString" placeholder="Ex: hadley/plyr">
     			</div>
     			<!-- <button type="submit" class="btn btn-primary">Submit</button> -->
             </form>
-
             <table class="table" id="resultsPane">
             </table>
 	</div>
