@@ -17,8 +17,12 @@ function ResultView() {
 
 	var public = {};
 
+	var prependRow = function() {
+		return resultsPane.insert('tr','tr');
+	};
+
 	var initialize = function() {
-		localSelection = resultsPane.append('tr');
+		localSelection = prependRow();
 		leftSide = localSelection.append('td');
 		rightSide = localSelection.append('td');
 		headingDisplay = rightSide.append('h1');
@@ -29,6 +33,8 @@ function ResultView() {
 	};
 
 	public.render = function(result) {
+		var probabilityString;
+
 		if (localSelection === undefined) {
 			initialize();
 		}
@@ -36,8 +42,9 @@ function ResultView() {
 		if (result.data === undefined) {
 			probabilityDisplay.text('...');
 		} else {
-			probabilityDisplay.text(result.data.probAlive.toPrecision(2));
-			console.log(leftSide)
+			probabilityString = (result.data.probAlive * 100).toFixed(1);
+			probabilityString += '%';
+			probabilityDisplay.text(probabilityString);
 			myglobal = leftSide;
 			cgraph = CommitsGraph(leftSide, result.data['weeks']);
 		}
@@ -87,6 +94,8 @@ var submitRepoString = function() {
 	var repoResult = RepoPulseResult(repoString, ResultView());
 	repoResult.load();
 	results.push(repoResult);
+	d3.select("#repoString").property('value', '');
+	d3.select("#repoString").property('placeholder', 'enter another repo. Ex: pydata/pandas');
 };
 
 d3.select("#newRepoForm").on('submit', function() {
