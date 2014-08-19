@@ -73,8 +73,12 @@ var getCommits = function(row) {
 };
 
 obj.setScales = function() {
+	var firstCommitDate = d3.min(obj.dataset, getDate);
+	var timeAxisStart =  new Date(firstCommitDate);
+	timeAxisStart.setDate(timeAxisStart.getDate() - 7);
+
 	obj.xScale = d3.time.scale();
-	obj.xScale.domain([d3.min(obj.dataset, getDate), new Date()]);
+	obj.xScale.domain([timeAxisStart, new Date()]);
 	obj.xScale.range([obj.leftPadding, obj.w - obj.rightPadding], 0.05);
 	obj.yScale = d3.scale.linear()
 	.domain([0, d3.max(dataset, getCommits)])
@@ -92,7 +96,8 @@ var parseDates = function(weeks) {
 obj.specifyAxes = function() {
 	obj.xAxisMaker = d3.svg.axis()
 	.scale(obj.xScale)
-	.orient('bottom');
+	.orient('bottom')
+	.ticks(5);
 	obj.yAxisMaker = d3.svg.axis()
 	.scale(obj.yScale)
 	.orient('left');
