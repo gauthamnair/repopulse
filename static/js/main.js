@@ -13,6 +13,7 @@ function ResultView() {
 	var headingDisplay;
 	var probabilityDisplay;
 	var deleteButton;
+	var gotoGithubButton;
 	var cgraph;
 
 	var public = {};
@@ -25,11 +26,25 @@ function ResultView() {
 		localSelection = prependRow();
 		leftSide = localSelection.append('td');
 		rightSide = localSelection.append('td');
-		headingDisplay = rightSide.append('h1');
-		probabilityDisplay = rightSide.append('h1');
-		deleteButton = rightSide.append('button');
-		deleteButton.text('clear');
-		deleteButton.on('click', public.remove);
+		headingDisplay = rightSide.append('h2');
+		probabilityDisplay = rightSide.append('h2');
+
+		deleteButton = rightSide.append('a')
+			.text('clear')
+			.property('role', 'button')
+			.attr('class', 'btn btn-default')
+			.on('click', public.remove);
+
+		// deleteButton = rightSide.append('button');
+		// deleteButton.text('clear');
+		// deleteButton.on('click', public.remove);
+
+		gotoGithubButton = rightSide.append('a')
+			.text('go to Github')
+			.property('role', 'button')
+			.attr('class','btn btn-default')
+			.attr('target', "_blank");
+			// .attr('href','https://www.github.com/' + );
 	};
 
 	public.render = function(result) {
@@ -38,7 +53,10 @@ function ResultView() {
 		if (localSelection === undefined) {
 			initialize();
 		}
+
 		headingDisplay.text(result.repoString);
+		gotoGithubButton.attr('href','https://www.github.com/' + result.repoString);
+
 		if (result.data === undefined) {
 			probabilityDisplay.text('...');
 		} else {
