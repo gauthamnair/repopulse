@@ -4,44 +4,43 @@ import pymysql as mdb
 import datetime
 con = mdb.connect('localhost', 'root', '', 'gitdb');
 
-query = "SELECT * FROM WeeklyContributions WHERE repo_full_name='hadley/plyr'"
+query = "SELECT * FROM WeeklyContributions WHERE repo_full_name='hadley/ggplot2'"
 weekly = pd.io.sql.read_sql(query, con)
 featureMakers.removeTimeFromWeekStartDate(weekly)
 
-hadleyWeekly = weekly[weekly['author_login'] == 'hadley']
+# hadleyWeekly = weekly[weekly['author_login'] == 'hadley']
 
-dailyCommitsByAuthor = featureMakers.pivotToDailyCommitsByAuthor(weekly)
+# dailyCommitsByAuthor = featureMakers.pivotToDailyCommitsByAuthor(weekly)
 
 tref = featureMakers.defaultTref()
-# tref = datetime.date.today()
+# tref = featureMakers.defaultTref() - datetime.timedelta(30)
 
 fmaker = featureMakers.FeatureMaker(tref=tref)
 
-byAuthor = fmaker.makeByAuthorFeatures(dailyCommitsByAuthor)
-print byAuthor
-aggregated = fmaker.aggregateBasicAuthorFeaturesToDict(byAuthor)
-print aggregated
-diversity = fmaker.getAuthorDiversity(byAuthor)
-print diversity
+# byAuthor = fmaker.makeByAuthorFeatures(dailyCommitsByAuthor)
+# print byAuthor
+# aggregated = fmaker.aggregateBasicAuthorFeaturesToDict(byAuthor)
+# print aggregated
+# diversity = fmaker.getAuthorDiversity(byAuthor)
+# print diversity
 
 directlyAggregated = fmaker.makeFeatures(weekly)
-print directlyAggregated
+for k in sorted(directlyAggregated.keys()):
+	print k,":",directlyAggregated[k]
 
 
-# dailyCommits = dailyCommitsByAuthor.sum(axis=1)
-# dailyCommitsResampled = featureMakers.resampleToDays(dailyCommits)
-# gapsOnly = featureMakers.get_ZeroRuns(dailyCommitsResampled)
-gapsOnly = featureMakers.getCommitsGaps(dailyCommitsByAuthor)
 
-query = '''
-SELECT * FROM WeeklyContributions 
-WHERE repo_full_name IN ('hadley/plyr', 'hadley/ggplot2')
-'''
-twoRepos = pd.io.sql.read_sql(query, con)
+# gapsOnly = featureMakers.getCommitsGaps(dailyCommitsByAuthor)
 
-results = []
-for repo_full_name, weeklyData in twoRepos.groupby('repo_full_name'):
-	features = fmaker.makeFeatures(weeklyData)
-	features['repo_full_name'] = repo_full_name
-	results.append(features)
-print pd.DataFrame(results)
+# query = '''
+# SELECT * FROM WeeklyContributions 
+# WHERE repo_full_name IN ('hadley/plyr', 'hadley/ggplot2')
+# '''
+# twoRepos = pd.io.sql.read_sql(query, con)
+
+# results = []
+# for repo_full_name, weeklyData in twoRepos.groupby('repo_full_name'):
+# 	features = fmaker.makeFeatures(weeklyData)
+# 	features['repo_full_name'] = repo_full_name
+# 	results.append(features)
+# print pd.DataFrame(results)

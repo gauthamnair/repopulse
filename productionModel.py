@@ -23,13 +23,12 @@ def learnModel():
 	learner.fit(X, y)
 	predictions = learner.predict(X)
 	print sklearn.metrics.classification_report(y_true=y, y_pred=predictions)
-	joblib.dump(learner, 'productionModel.pkl')
+	joblib.dump(learner, 'persistentModel/productionModel.pkl')
 
 
 def loadModel():
-	learner = joblib.load('productionModel.pkl')
+	learner = joblib.load('persistentModel/productionModel.pkl')
 	return learner
-
 
 if __name__ == '__main__':
 	learnModel()

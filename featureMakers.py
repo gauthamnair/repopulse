@@ -114,6 +114,14 @@ class FeatureMaker:
         else:
             return ewmaseries.values[-1]
 
+    ewmaTimeScales = {
+        'TwoWeeks' : 14,
+        'OneMonth' : 30,
+        'ThreeMonth' : 30*3,
+        'SixMonth' : 30*6,
+        'OneYear' : 365
+    }
+
     def ewmaTwoWeeks(self, timeseries):
         return self.getEWMA(timeseries, timeScaleInDays=14)
 
@@ -134,13 +142,13 @@ class FeatureMaker:
             'futureCommits_num' :  self.totalInPeriodStarting,
             'pastCommits_num' : self.totalToDate,
             'daysSinceLastCommit' : self.daysSinceLastNonZero,
-            'daysSinceFirstCommit' : self.daysSinceOldestNonZero,
-            'ewmaTwoWeeks' : self.ewmaTwoWeeks,
-            'ewmaOneMonth' : self.ewmaOneMonth,
-            'ewmaThreeMonth' : self.ewmaThreeMonth,
-            'ewmaSixMonth' : self.ewmaSixMonth,
-            'ewmaOneYear' : self.ewmaOneYear,
+            'daysSinceFirstCommit' : self.daysSinceOldestNonZero
         }
+        for timeScale, days in self.ewmaTimeScales.items():
+            def makeEWMA(tseries, timeScaleInDays=days):
+                return self.getEWMA(tseries, timeScaleInDays)
+            makers['ewma' + timeScale] = makeEWMA
+
         return makers
 
     def makeByAuthorFeatures(self, dailyCommitsByAuthor):
@@ -150,25 +158,28 @@ class FeatureMaker:
             return pd.Series(values, index=names)
         return dailyCommitsByAuthor.apply(makeFeatures).T
 
+
     basicFeatureAggregators = {
         'futureCommits_num': np.sum,
         'pastCommits_num' : np.sum,
         'daysSinceLastCommit' : np.min,
         'daysSinceFirstCommit' : np.max,
-        'ewmaTwoWeeks' : np.sum,
-        'ewmaOneMonth' : np.sum,
-        'ewmaThreeMonth' : np.sum,
-        'ewmaSixMonth' : np.sum,
-        'ewmaOneYear' : np.sum,
     }
+    for timeScale in ewmaTimeScales:
+        basicFeatureAggregators['ewma' + timeScale] = np.sum
 
-    diversityFeatures = [
-        'pastCommits_num',
-        'ewmaTwoWeeks',
-        'ewmaOneMonth',
-        'ewmaThreeMonth',
-        'ewmaSixMonth',
-        'ewmaOneYear']
+
+    def aggregateBasicAuthorFeaturesToDict(self, byAuthorFeatures):
+        aggregated = dict()
+        for colName, aggregator in self.basicFeatureAggregators.items():
+            aggregated[colName] = aggregator(byAuthorFeatures[colName])
+        return aggregated    
+
+
+
+
+    diversityFeatures = ['pastCommits_num']
+    diversityFeatures += ['ewma' + timeScale for timeScale in ewmaTimeScales]
 
     def getAuthorDiversity(self, byAuthorFeatures):
         diversity = dict()
@@ -176,16 +187,12 @@ class FeatureMaker:
             diversity['diversity_' + colName] = getDiversity(byAuthorFeatures[colName])
         return diversity
 
-    def aggregateBasicAuthorFeaturesToDict(self, byAuthorFeatures):
-        aggregated = dict()
-        for colName, aggregator in self.basicFeatureAggregators.items():
-            aggregated[colName] = aggregator(byAuthorFeatures[colName])
-        return aggregated      
-
+  
     def getGapStats(self, dailyCommits):
         zeroRuns = get_ZeroRuns(dailyCommits).ix[:self.tref]
         stats = zeroRuns['gap_length_days'].describe().to_dict()
         return {'gapstats_'+k : v for (k,v) in stats.items()}
+
 
     def makeFeatures(self, df):
         dailyCommitsByAuthor = pivotToDailyCommitsByAuthor(df)
@@ -193,6 +200,12 @@ class FeatureMaker:
         features = self.aggregateBasicAuthorFeaturesToDict(byAuthor)
 
         features.update(self.getAuthorDiversity(byAuthor))
+
+        for scaleName, scaleDays in self.ewmaTimeScales.items():
+            orig = features['ewma' + scaleName]
+            adjusted = orig * np.exp(features['daysSinceLastCommit'] / float(scaleDays) )
+            features['adjusted' + scaleName] = adjusted
+
 
         dailyCommits = dailyCommitsByAuthor.sum(axis=1)
         features.update(self.getGapStats(dailyCommits))
