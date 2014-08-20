@@ -29,6 +29,8 @@ _predColumns = ['daysSinceFirstCommit',
   'ewmaTwoWeeks',
   'pastCommits_num']
 
+# _predColumns = ['daysSinceLastCommit']
+
 def makePredictors(byRepo, predColumns = _predColumns):
 	dfX = byRepo[predColumns]
 	return (dfX.values, predColumns)
@@ -52,8 +54,12 @@ class EvaluationReport:
 			y_true=self.y_true, 
 			y_pred=self.y_pred)
 
-	def auc(self):
+	def roc(self):
 		(fpr, tpr, _) = sklearn.metrics.roc_curve(self.y_true, self.predScores)
+		return (fpr, tpr)
+
+	def auc(self):
+		(fpr, tpr) = self.roc()
 		return sklearn.metrics.auc(fpr, tpr)
 
 

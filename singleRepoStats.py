@@ -36,14 +36,17 @@ def getTotalCommitsByWeek(weeklyData):
 		for (t,c) 
 		in zip(weeklyTotal.index, weeklyTotal.values)]
 
-def getPredictedProbAlive(weeklyData):
+predictionModel = productionModel.loadModel()
+
+def getPredictedProbAlive(weeklyData, tref = None):
 	featureMakers.removeTimeFromWeekStartDate(weeklyData)
-	tref = datetime.date.today()
+
+	if tref == None:
+		tref = datetime.date.today()
 	fmaker = featureMakers.FeatureMaker(tref=tref)
 
 	features = pd.DataFrame([fmaker.makeFeatures(weeklyData)])
-	model = productionModel.loadModel()
 
 	(predictors, colNames) = modelTools.makePredictors(features)
-	prob_alive = model.predict_proba(predictors)[0,1]
+	prob_alive = predictionModel.predict_proba(predictors)[0,1]
 	return prob_alive
