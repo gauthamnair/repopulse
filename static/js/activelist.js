@@ -2,8 +2,6 @@
 // #master
 // #saved
 
-var data = ['Matthew', 'Mark', 'Luke', 'John'];
-
 
 var SavedRow = function(item, parentSelection) {
 	var nameUI;
@@ -42,6 +40,8 @@ var savedTable = d3.select("#saved");
 var onSave = function(item){
 	SavedRow(item, savedTable);
 };
+
+var data = ['Matthew', 'Mark', 'Luke', 'John'];
 
 data.forEach(function(item){
 	ActiveRow(item, masterTable, onSave);
