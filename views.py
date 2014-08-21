@@ -4,7 +4,6 @@ import pymysql as mdb
 import datetime
 import singleRepoStats
 
-db = mdb.connect(user="root", host="localhost", db="world_innodb", charset='utf8')
 
 
 @app.route('/')
