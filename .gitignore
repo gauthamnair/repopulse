@@ -1,6 +1,5 @@
 *.json
 .ipynb_checkpoints/*
-static/d3/
 data*
 log.txt
 success.txt
