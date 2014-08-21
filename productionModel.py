@@ -9,11 +9,15 @@ import trainingData
 import modelTools
 
 
+def makePredictors(featuresByRepo):
+	return modelTools.makePredictors(featuresByRepo)
+
+
 def learnModel():
 	byRepo = trainingData.load()
 	modelTools.addAliveOrDeadColumn(byRepo)
 
-	(X, colNames) = modelTools.makePredictors(byRepo)
+	(X, colNames) = makePredictors(byRepo)
 	y = modelTools.makeTarget(byRepo)
 
 	learner = sklearn.pipeline.Pipeline(

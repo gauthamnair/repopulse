@@ -1,7 +1,7 @@
 import numpy as np
 import sklearn.cross_validation
 import sklearn.metrics
-
+import pandas as pd
 
 def addAliveOrDeadColumn(df):
 	df['aliveOrDead'] = np.where(df['futureCommits_num'] > 0,
@@ -35,6 +35,47 @@ _predColumns = ['daysSinceFirstCommit',
   'pastCommits_num']
 
 # _predColumns = ['daysSinceLastCommit']
+
+
+class SinglePredictor:
+	def __init__(self, colName, transformer=None):
+		self.colName = colName
+		self.transformer = transformer
+
+	def makePredictor(self, featuresByRepo):
+		if self.transformer != None:
+			return self.transformer(featuresByRepo[self.colName])
+		else:
+			return featuresByRepo[self.colName]
+
+class PredictorsMaker:
+	def __init__(self):
+		self.singlePredictors = dict()
+		self.interactions = []
+
+	def includeColumn(self, colName, alias=None, transformer=None):
+		sp = SinglePredictor(colName=colName, transformer=transformer)
+		if alias == None:
+			alias = colName
+		self.singlePredictors[alias] = sp
+
+	def includeInteraction(self, alias1, alias2):
+		self.interactions.append((alias1, alias2))
+
+	def makePredictors(self, featuresByRepo):
+		result = dict()
+		for alias, singlePredictor in self.singlePredictors.items():
+			result[alias] = singlePredictor.makePredictor(featuresByRepo)
+
+		for (alias1, alias2) in self.interactions:
+			interactionAlias = alias1 + '*' + alias2
+			result[interactionAlias] = result[alias1] * result[alias2]
+
+		result = pd.DataFrame(result)
+		predictorNames = list(result.keys())
+		return (result.values, predictorNames)
+
+
 
 def makePredictors(byRepo, predColumns = _predColumns):
 	dfX = byRepo[predColumns]

@@ -4,7 +4,6 @@ import pandas as pd
 import featureMakers
 import datetime
 import productionModel
-import modelTools
 import time
 
 importer = gitImporter.importer
@@ -47,6 +46,6 @@ def getPredictedProbAlive(weeklyData, tref = None):
 
 	features = pd.DataFrame([fmaker.makeFeatures(weeklyData)])
 
-	(predictors, colNames) = modelTools.makePredictors(features)
+	(predictors, colNames) = productionModel.makePredictors(features)
 	prob_alive = predictionModel.predict_proba(predictors)[0,1]
 	return prob_alive

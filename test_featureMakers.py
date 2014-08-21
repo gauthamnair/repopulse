@@ -8,21 +8,10 @@ query = "SELECT * FROM WeeklyContributions WHERE repo_full_name='hadley/ggplot2'
 weekly = pd.io.sql.read_sql(query, con)
 featureMakers.removeTimeFromWeekStartDate(weekly)
 
-# hadleyWeekly = weekly[weekly['author_login'] == 'hadley']
-
-# dailyCommitsByAuthor = featureMakers.pivotToDailyCommitsByAuthor(weekly)
-
 tref = featureMakers.defaultTref()
 # tref = featureMakers.defaultTref() - datetime.timedelta(30)
 
 fmaker = featureMakers.FeatureMaker(tref=tref)
-
-# byAuthor = fmaker.makeByAuthorFeatures(dailyCommitsByAuthor)
-# print byAuthor
-# aggregated = fmaker.aggregateBasicAuthorFeaturesToDict(byAuthor)
-# print aggregated
-# diversity = fmaker.getAuthorDiversity(byAuthor)
-# print diversity
 
 directlyAggregated = fmaker.makeFeatures(weekly)
 for k in sorted(directlyAggregated.keys()):
