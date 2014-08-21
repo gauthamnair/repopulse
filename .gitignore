@@ -1,6 +1,5 @@
 *.json
 .ipynb_checkpoints/*
-static/jquery/
 static/d3/
 data*
 log.txt
