@@ -106,4 +106,34 @@ Then I pressed enter wherever it asked for a password
 then 
 mysql -u root -p
 
-works and I can 
+
+# my code
+
+from home:
+```
+git clone https://github.com
+```
+
+then in mysql created the gitdb database:
+```
+CREATE DATABASE gitdb
+```
+
+
+Just like that the gitModels seems to work!
+```
+python gitModels.py
+```
+created the databases in gitdb and did not complain
+
+tested:
+```
+python test_singleRepoStats.py
+```
+and it worked! it added hadley/plyr to the cache
+and correctly calculated the probability.
+
+
+
+
+
