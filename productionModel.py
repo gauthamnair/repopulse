@@ -10,7 +10,16 @@ import modelTools
 
 
 def makePredictors(featuresByRepo):
-	return modelTools.makePredictors(featuresByRepo)
+	pm = modelTools.PredictorsMaker()
+
+	toAdd = ['daysSinceLastCommit', 'pastCommits_num', 'daysSinceFirstCommit']
+	toAdd += [x for x in featuresByRepo.keys() if x.startswith('ewma')]
+	toAdd += [x for x in featuresByRepo.keys() if x.startswith('diversity')]
+	
+	for colName in toAdd:
+	    pm.includeColumn(colName)
+
+	return pm.makePredictors(featuresByRepo)
 
 
 def learnModel():
