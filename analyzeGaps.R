@@ -9,8 +9,20 @@ features <- read.csv('data/intermediate/byRepoToday.csv')
 
 gaps <- data.table(gaps)
 
-longestgap <- gaps[, list(longest_gap_days = max(gap_length_days)),
+longestgap <- gaps[, list(longest_gap_days = max(gap_length_days),
+	num_gaps = length(gap_length_days), num_gaps_sixM = sum(gap_length_days>30*6)),
 	by='repo_full_name']
+
+
+repoStats <- merge(longestgap, features[c('repo_full_name', 'pastCommits_num')],
+	by='repo_full_name')
+
+totalStats <- summarize(repoStats, num_gaps=sum(num_gaps), 
+	num_gaps_sixM = sum(num_gaps_sixM),
+	pastCommits_num = sum(pastCommits_num))
+
+print(totalStats$num_gaps_sixM / totalStats$pastCommits_num)
+
 
 graphFileName <- function(str){
 	return(paste0('data/graphs/', str, '.pdf'))
