@@ -1,5 +1,12 @@
 # supervisord
 
+## devsetup version
+
+from home:
+```
+sudo supervisord -c simple.conf
+```
+
 ## seeing what supervisor is doing:
 ps aux | grep 'supervisord'
 
@@ -134,6 +141,77 @@ and it worked! it added hadley/plyr to the cache
 and correctly calculated the probability.
 
 
+# getting the server to run.
+
+I made sure github could authenticate
+by setting the environment variable.
 
 
+Then made a modified awsrun.py,
+
+and
+
+```
+python awsrun.py
+```
+
+then browsing to:
+http://54.164.92.112:5000/
+
+worked!
+the app works just fine!
+
+
+Now let's go back to the gunicorn thing:
+
+following the dev setup:
+(from the home directory)
+
+```
+~ $ cat simple.conf
+[program:myserver]
+command=gunicorn hello:app -w 4 -b 0.0.0.0:80
+
+[supervisord]
+logfile=/home/ubuntu/supervisord.log
+loglevel=debug
+user=root
+```
+
+```
+~$ cat hello.py
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return "Hello World!"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+then running:
+```
+sudo supervisord -c simple.conf
+```
+makes hello world show up at my ip: 
+http://54.164.92.112/
+
+and fires up a bunch of gunicorn processes
+
+I stopped supervisord and the gunicorn processes
+
+Now, if I try from the command line:
+```
+gunicorn hello:app -b 0.0.0.0:80
+```
+
+it thinks a bit and exits without producing any output
+
+```
+gunicorn hello:app -w 1 -b 0.0.0.0:80
+```
+
+This fails too.
 
