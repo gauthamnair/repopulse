@@ -13,3 +13,4 @@ log*.txt
 tex/*.aux
 tex/*.log
 tex/*.pdf
+githubToken

@@ -166,9 +166,10 @@ def weeklyContributionsToDicts(weeklyContributions):
 
 
 
+gtoken = open('githubToken', 'r').read().strip()
 # mypw = os.environ['GITPASSWD']
 
 # importer = GitDataImporter(Github('gauthamnair', mypw))
-importer = GitDataImporter(Github())
+importer = GitDataImporter(Github(gtoken))
 
 importerNoAuth = GitDataImporter(Github())

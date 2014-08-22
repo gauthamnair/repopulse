@@ -215,3 +215,21 @@ gunicorn hello:app -w 1 -b 0.0.0.0:80
 
 This fails too.
 
+
+# working solution with div
+
+Turns out the main problem was
+that when I was sudo'ing to run
+supervisord or gunicorn,
+I was loosing the environment 
+variable that held the github 
+api authentication.
+
+I switched how that is done, 
+
+and with help form Div to refactor
+my views.py/app.py/run.py into 
+a single file, the whole thing works!
+
+
+
