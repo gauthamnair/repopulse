@@ -7,6 +7,8 @@ failures.txt
 repologfile.txt
 log*.txt
 *.pyc
+*.swp
+*.pid
 .DS_Store
 tex/*.aux
 tex/*.log

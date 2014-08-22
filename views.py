@@ -1,5 +1,6 @@
+from flask import Flask
+app = Flask(__name__)
 from flask import render_template, request, redirect, jsonify
-from app import app
 import pymysql as mdb
 import datetime
 import singleRepoStats
@@ -33,3 +34,8 @@ def getRepoStats(repoString):
 	weeks = singleRepoStats.getTotalCommitsByWeek(weeklyData)
 	return jsonify({'repo_full_name' : repoString,
 		'probAlive' : probAlive, 'weeks' : weeks})	
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+

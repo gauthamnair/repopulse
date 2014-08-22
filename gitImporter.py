@@ -166,8 +166,9 @@ def weeklyContributionsToDicts(weeklyContributions):
 
 
 
-mypw = os.environ['GITPASSWD']
+# mypw = os.environ['GITPASSWD']
 
-importer = GitDataImporter(Github('gauthamnair', mypw))
+# importer = GitDataImporter(Github('gauthamnair', mypw))
+importer = GitDataImporter(Github())
 
 importerNoAuth = GitDataImporter(Github())
