@@ -7,7 +7,7 @@
 	x found that there is a timeout occasionally on getRepo
 	x think I fixed it by adding auto retry to singleRepoStats
 x checked app on pc chrome and pc IE
-- put slides on slideshare/slides.com
+x put slides on slideshare/slides.com
 - check for duplicate entries in package names
 - remake plots of independent variables against the dependent variable.
 
@@ -15,8 +15,9 @@ x checked app on pc chrome and pc IE
 - find some examples of packages mistakenly taken for dead
 	and packages mistakenly taken for alive
 - what is the straight-up classification error on the training set?
+
 - what is the effect of regularization?
-- what is the effect of stars?
+x what is the effect of stars?
 - articulate the problem with choosing a time horizon
 - notes on other classifiers I attempted to use
 
