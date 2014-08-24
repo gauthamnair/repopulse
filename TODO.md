@@ -1,53 +1,30 @@
-x load search query results using the sqlalchemy model
-x plot commit_stats available from github.
 
-x extractor for weekly contributions from a repo.
-x avoid the search results limits problems
+# fortify the app and presentation
 
-x explore why there were duplicates in the database
-x modify scripts to avoid duplicates
-
-x removed duplicates from Repos and weeks
-
-x explore a temporal feature maker
-x explore a target maker
-
-x build feature makers
-x build something that grabs a single repo and predicts its near future.
-
-x import flask stuff to this repo
-x mvp
+- make screenshots of the app in action
+- add a demo mode with a hyperlink to the github python api
+- figure out why it sometimes does not work with Chrome
+	- found that there is a timeout occasionally on getRepo
 
 
-# Friday items
-- find concrete compelling use case example
-	(what was the vega/vincent alternative?)
-- show how much of the effect is predicted by daysSinceLastCommit
-- try a fit without daysSinceLastCommit
+
 
 # analysis
 
 x explore gap time distribution to discuss live/dead cutoff
+x graph how quickly the algorithm predicts death for a repo.
 - check that the EWMA code is doing the right thing. Diversity seems too big.
 - implement a learning curve visualizer
 - clean up feature-making tests
 - see if gaps can be reincorporated, replacing nans with zeros.
-- graph how quickly the algorithm predicts death for a repo.
+
 
 
 # deployment
 
 x propagated feature-making/training changes up to the website.
 
-# improve the data story
-
-- clean up downloading code
-- get Python weekly stragglers
-
-
 # user experience
-
-- fix ticks
 
 Notes from talking to Div and Brandon:
 

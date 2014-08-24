@@ -13,7 +13,9 @@ def getRepoWeeklyData(repo_full_name):
 	cached = gitModels.getOrClearCachedWeeklyData(repo_full_name)
 
 	if len(cached) == 0:
-		pyGithubRepo = importer.getRepo(repo_full_name)
+		pyGithubRepo = gitImporter.getPageWithAutoRetry(
+			getter=importer.getRepo,
+			parameter=repo_full_name)
 		while True:
 			weeklyContributions = importer.getWeeklyContributions(pyGithubRepo)
 			if weeklyContributions != None:

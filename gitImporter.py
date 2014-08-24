@@ -5,12 +5,13 @@ import time
 import datetime
 
 
-def getPageWithAutoRetry(getter, parameter, waitForLimitRefresh):
+def getPageWithAutoRetry(getter, parameter, waitForLimitRefresh=None):
 	waitIfFail = 1
 	attempts = 0
 	while attempts < 5:
 		try:
-			waitForLimitRefresh()
+			if waitForLimitRefresh != None:
+				waitForLimitRefresh()
 			pageContents = getter(parameter)
 			return pageContents
 		except Exception as err:
