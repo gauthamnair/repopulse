@@ -1,10 +1,25 @@
 
 # fortify the app and presentation
 
-- make screenshots of the app in action
 - add a demo mode with a hyperlink to the github python api
-- figure out why it sometimes does not work with Chrome
-	- found that there is a timeout occasionally on getRepo
+- make screenshots of the app in action
+? figure out why it sometimes does not work with Chrome
+	x found that there is a timeout occasionally on getRepo
+	x think I fixed it by adding auto retry to singleRepoStats
+x checked app on pc chrome and pc IE
+- put slides on slideshare/slides.com
+- check for duplicate entries in package names
+- remake plots of independent variables against the dependent variable.
+
+- what exactly is the rate of misclassification of each case?
+- find some examples of packages mistakenly taken for dead
+	and packages mistakenly taken for alive
+- what is the straight-up classification error on the training set?
+- what is the effect of regularization?
+- what is the effect of stars?
+- articulate the problem with choosing a time horizon
+- notes on other classifiers I attempted to use
+
 
 
 

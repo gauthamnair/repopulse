@@ -18,11 +18,9 @@ def makePredictors(featuresByRepo):
 	
 	for colName in toAdd:
 	    pm.includeColumn(colName)
-
 	return pm.makePredictors(featuresByRepo)
 
-
-def learnModel():
+def makeTrainedModel():
 	byRepo = trainingData.load()
 	modelTools.addAliveOrDeadColumn(byRepo)
 
@@ -34,15 +32,21 @@ def learnModel():
 		('logistic', linear_model.LogisticRegression())])
 
 	learner.fit(X, y)
+	return (learner, X, y)
+
+def printModelEvaluation(learner, X, y):
 	predictions = learner.predict(X)
 	print sklearn.metrics.classification_report(y_true=y, y_pred=predictions)
-	joblib.dump(learner, 'persistentModel/productionModel.pkl')
 
+def saveModelAsProductionModel(learner):
+	joblib.dump(learner, 'persistentModel/productionModel.pkl')
 
 def loadModel():
 	learner = joblib.load('persistentModel/productionModel.pkl')
 	return learner
 
 if __name__ == '__main__':
-	learnModel()
+	(learner, X, y) = makeTrainedModel()
+	printModelEvaluation(learner, X, y)
+	saveModelAsProductionModel(learner)
 
