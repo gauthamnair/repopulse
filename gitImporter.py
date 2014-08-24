@@ -66,6 +66,12 @@ class GitDataImporter:
 			else:
 				return weeklyContributions
 
+	def getWeeklyContributionsWithFailIfNone(self, repo):
+		weeklyContributions = self.getWeeklyContributions(repo)
+		if weeklyContributions == None:
+			raise Exception('weekly contributions was None')
+		return weeklyContributions
+
 	def getCommitsForRepo(self, repo):
 		logging.info('grabbing commits for repo %s' % repo.name)
 		commitPaginator = repo.get_commits()

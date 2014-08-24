@@ -16,12 +16,10 @@ def getRepoWeeklyData(repo_full_name):
 		pyGithubRepo = gitImporter.getPageWithAutoRetry(
 			getter=importer.getRepo,
 			parameter=repo_full_name)
-		while True:
-			weeklyContributions = importer.getWeeklyContributions(pyGithubRepo)
-			if weeklyContributions != None:
-				break
-			else:
-				time.sleep(1)
+
+		weeklyContributions = gitImporter.getPageWithAutoRetry(
+			getter=importer.getWeeklyContributionsWithFailIfNone,
+			parameter=pyGithubRepo)
 
 		gitModels.cacheWeeklyContributions(weeklyContributions, 
 			repo_full_name = repo_full_name)
