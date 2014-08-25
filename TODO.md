@@ -11,13 +11,16 @@ x put slides on slideshare/slides.com
 - check for duplicate entries in package names
 - remake plots of independent variables against the dependent variable.
 
-- what exactly is the rate of misclassification of each case?
-- find some examples of packages mistakenly taken for dead
+x what exactly is the rate of misclassification of each case?
+x find some examples of packages mistakenly taken for dead
 	and packages mistakenly taken for alive
-- what is the straight-up classification error on the training set?
+x what is the straight-up classification error on the training set?
+	16% of called-Dead are alive
+	24% of called-Alive are dead
 
 - what is the effect of regularization?
 x what is the effect of stars?
+
 - articulate the problem with choosing a time horizon
 - notes on other classifiers I attempted to use
 
