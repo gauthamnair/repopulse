@@ -13,6 +13,10 @@ import singleRepoStats
 def singlepage():
 	return render_template("singlepage.html", theTime=datetime.datetime.today())
 
+@app.route('/example', methods=['GET'])
+def example():
+	return render_template("example.html")
+
 @app.route('/getresult', methods=['GET'])
 def mockpost():
 	print "\nThe Repo String is"
