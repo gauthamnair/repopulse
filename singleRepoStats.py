@@ -23,7 +23,6 @@ def getRepoWeeklyData(repo_full_name):
 
 		gitModels.cacheWeeklyContributions(weeklyContributions, 
 			repo_full_name = repo_full_name)
-		gitModels.session.commit()
 		cached = gitModels.getOrClearCachedWeeklyData(repo_full_name)
 
 	return cached

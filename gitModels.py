@@ -8,7 +8,7 @@ import logging
 
 # logging.basicConfig(level=logging.INFO)
 
-engine = create_engine("mysql+pymysql://root:@localhost/gitdb", echo=True)
+engine = create_engine("mysql+pymysql://root:@localhost/gitdb", echo=True, pool_recycle=3600)
 Base = declarative_base()
 
 connection = engine.connect()
@@ -141,6 +141,8 @@ def storeWeeklyContributions(weeklyContributions, repo_full_name):
 def cacheWeeklyContributions(weeklyContributions, repo_full_name):
 	downloaded_on = datetime.datetime.today()
 
+	session = sessionMaker()
+
 	weeklyDBEntities = list()
 	for contributor in weeklyContributions:
 		author_login = contributor.author.login
@@ -159,6 +161,7 @@ def cacheWeeklyContributions(weeklyContributions, repo_full_name):
 			session.add(wm)
 			weeklyDBEntities.append(wm)
 
+	session.commit()
 	return weeklyDBEntities
 
 
@@ -170,6 +173,7 @@ def getOrClearCachedWeeklyData(repo_full_name, expiryDays=2):
 
 	query = "SELECT * FROM CachedWeeklyContributions WHERE repo_full_name = %s"
 	params = (repo_full_name, )
+
 	weeks = pd.io.sql.read_sql_query(query, engine, params=params)
 
 	if len(weeks) == 0:
@@ -178,6 +182,9 @@ def getOrClearCachedWeeklyData(repo_full_name, expiryDays=2):
 	oldestAllowed = datetime.datetime.now() - datetime.timedelta(expiryDays)
 
 	if any(t < oldestAllowed for t in weeks['downloaded_on']):
+
+		session = sessionMaker()
+
 		baseQuery = session.query(CachedWeeklyContribution)
 		query = baseQuery.filter(
 			CachedWeeklyContribution.repo_full_name == repo_full_name)
