@@ -13,3 +13,7 @@ for repo in repos:
 
 for k, v in data.items():
 	print k, ":", len(v)
+
+data = pd.DataFrame(data)
+
+data[['full_name', 'owner_login', 'stargazers_count']].to_csv('data/intermediate/infoRepos.csv')

@@ -51,8 +51,8 @@ print(q + facet_wrap(~ aliveOrDead))
 
 falseAlive <- subset(repoStats, (probAlive > 0.95) & aliveOrDead=='dead')
 falseAlive <- falseAlive[c('repo_full_name', 'daysSinceLastCommit', 'pastCommits_num', 'probAlive')]
-falseAlive <- falseAlive[order(-falseAlive$probAlive, -falseAlive$pastCommits_num),]
+falseAlive <- falseAlive[order(-falseAlive$pastCommits_num),]
 
 falseDead <- subset(repoStats, (probAlive < 0.05) & aliveOrDead=='alive')
 falseDead <- falseDead[c('repo_full_name', 'daysSinceLastCommit', 'pastCommits_num', 'probAlive')]
-falseDead <- falseDead[order(-falseDead$probAlive, -falseDead$pastCommits_num),]
+falseDead <- falseDead[order(-falseDead$pastCommits_num),]

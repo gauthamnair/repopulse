@@ -8,7 +8,7 @@
 	x think I fixed it by adding auto retry to singleRepoStats
 x checked app on pc chrome and pc IE
 x put slides on slideshare/slides.com
-- check for duplicate entries in package names
+x check for duplicate entries in package names
 - remake plots of independent variables against the dependent variable.
 
 x what exactly is the rate of misclassification of each case?
